@@ -18,19 +18,19 @@ public class LogoutServlet extends HttpServlet {
     private final Gson gson = new Gson();
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // Get the current session
         HttpSession session = request.getSession(false);
-        
+
         if (session != null) {
             // Remove all session attributes
             session.removeAttribute("user");
-            
-            // Invalidate the session
+
+            // Invalidate the session immediately
             session.invalidate();
-            
+
             // Clear all cookies
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
@@ -41,12 +41,15 @@ public class LogoutServlet extends HttpServlet {
                     response.addCookie(newCookie);
                 }
             }
-            
-            // Add cache control headers to prevent caching
+
+            // Add security headers to prevent caching
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Expires", "0");
-            
+            response.setHeader("X-Content-Type-Options", "nosniff");
+            response.setHeader("X-Frame-Options", "DENY");
+            response.setHeader("X-XSS-Protection", "1; mode=block");
+
             // Redirect to home.jsp
             response.sendRedirect(request.getContextPath() + "/login");
         } else {
@@ -56,26 +59,17 @@ public class LogoutServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Check if there's an active session
-        HttpSession session = request.getSession(false);
-        
-        if (session != null && session.getAttribute("user") != null) {
-            // Forward to logout.jsp to show the logout confirmation page
-            request.getRequestDispatcher("/FrontEnd/logout.jsp").forward(request, response);
-        } else {
-            // No active session, redirect to home.jsp
-            response.sendRedirect(request.getContextPath() + "/FrontEnd/home.jsp");
-        }
+        // Redirect GET requests to POST to ensure proper logout
+        doPost(request, response);
     }
 
     // Prevent access to user data after logout
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) 
+    protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // Add security headers
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
@@ -83,15 +77,7 @@ public class LogoutServlet extends HttpServlet {
         response.setHeader("X-Content-Type-Options", "nosniff");
         response.setHeader("X-Frame-Options", "DENY");
         response.setHeader("X-XSS-Protection", "1; mode=block");
-        
-        // Check if the request is a GET or POST
-        String method = request.getMethod();
-        
-        if ("GET".equals(method) || "POST".equals(method)) {
-            super.service(request, response);
-        } else {
-            response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            response.sendRedirect(request.getContextPath() + "/FrontEnd/home.jsp");
-        }
+
+        super.service(request, response);
     }
 }
