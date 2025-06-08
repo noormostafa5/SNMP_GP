@@ -1,12 +1,12 @@
 package com.mycompany.snmpclientserver;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SNMPClientServer {
     private static final Logger logger = LoggerFactory.getLogger(SNMPClientServer.class);
@@ -23,16 +23,35 @@ public class SNMPClientServer {
     }
     
     public void start() {
-        // تشغيل المراقبة كل ساعة
+        // Send an immediate test trap
+        logger.info("Sending initial test trap...");
+        try {
+            double cpuUsage = systemMonitor.getCpuUsage();
+            double memoryUsage = systemMonitor.getMemoryUsage();
+            String diskStatus = systemMonitor.getDiskStatus();
+            alertSender.sendHealthReport(cpuUsage, memoryUsage, diskStatus);
+            logger.info("Initial test trap sent successfully");
+        } catch (Exception e) {
+            logger.error("Failed to send initial test trap", e);
+        }
+
+        // تشغيل المراقبة كل دقيقة
         scheduler.scheduleAtFixedRate(() -> {
             try {
+                logger.info("Sending scheduled health report...");
                 // جمع معلومات النظام
                 double cpuUsage = systemMonitor.getCpuUsage();
                 double memoryUsage = systemMonitor.getMemoryUsage();
                 String diskStatus = systemMonitor.getDiskStatus();
                 
+                logger.info("System metrics - CPU: {}%, Memory: {}%, Disk Status: {}", 
+                           String.format("%.2f", cpuUsage),
+                           String.format("%.2f", memoryUsage),
+                           diskStatus);
+                
                 // إرسال تقرير الصحة
                 alertSender.sendHealthReport(cpuUsage, memoryUsage, diskStatus);
+                logger.info("Health report sent successfully");
                 
                 // التحقق من وجود أخطاء وإرسال تنبيهات
                 if (!systemMonitor.isSystemHealthy()) {
@@ -50,14 +69,17 @@ public class SNMPClientServer {
                                    .append("%\n");
                         }
                     }
-                    alertSender.sendTrap(errorDesc.toString());
+                    if (errorDesc.length() > 0) {
+                        logger.info("Sending alarm trap: {}", errorDesc.toString());
+                        alertSender.sendTrap(errorDesc.toString());
+                    }
                 }
             } catch (Exception e) {
-                logger.error("Error in monitoring cycle", e);
+                logger.error("Error in monitoring cycle: {}", e.getMessage(), e);
             }
-        }, 0, 1, TimeUnit.HOURS);
+        }, 0, 1, TimeUnit.MINUTES);
         
-        logger.info("SNMP Client Server started");
+        logger.info("SNMP Client Server started - Sending health reports every minute");
     }
     
     public void stop() {
@@ -67,18 +89,33 @@ public class SNMPClientServer {
     }
     
     public static void main(String[] args) {
-        if (args.length != 5) {
-            System.out.println("Usage: java -jar SNMPClientServer.jar <serverName> <serverIP> <serverPort> <monitoringServerIP> <monitoringServerPort>");
-            System.exit(1);
+        // Default values
+        String serverName = "BTS-1";
+        String serverIP = "127.0.0.1";
+        int serverPort = 2162;
+        String monitoringServerIP = "127.0.0.1";
+        int monitoringServerPort = 1161;
+        
+        // Override defaults if arguments are provided
+        if (args.length > 0) {
+            if (args.length != 5) {
+                System.out.println("Usage: java -jar SNMPClientServer.jar [serverName] [serverIP] [serverPort >1024] [monitoringServerIP] [monitoringServerPort >1024]");
+                System.out.println("Using default values:");
+                System.out.println("serverName: " + serverName);
+                System.out.println("serverIP: " + serverIP);
+                System.out.println("serverPort: " + serverPort);
+                System.out.println("monitoringServerIP: " + monitoringServerIP);
+                System.out.println("monitoringServerPort: " + monitoringServerPort);
+            } else {
+                serverName = args[0];
+                serverIP = args[1];
+                serverPort = Integer.parseInt(args[2]);
+                monitoringServerIP = args[3];
+                monitoringServerPort = Integer.parseInt(args[4]);
+            }
         }
         
         try {
-            String serverName = args[0];
-            String serverIP = args[1];
-            int serverPort = Integer.parseInt(args[2]);
-            String monitoringServerIP = args[3];
-            int monitoringServerPort = Integer.parseInt(args[4]);
-            
             SNMPClientServer server = new SNMPClientServer(serverName, serverIP, serverPort,
                                                          monitoringServerIP, monitoringServerPort);
             server.start();
