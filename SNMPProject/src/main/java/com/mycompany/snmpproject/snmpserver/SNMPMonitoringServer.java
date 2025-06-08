@@ -16,9 +16,9 @@ import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 public class SNMPMonitoringServer implements CommandResponder {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/snmp_monitoring_db";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_URL = "jdbc:postgresql://my-snmp-public.ca5cwqo86nt5.us-east-1.rds.amazonaws.com:5432/snmp";
+    private static final String DB_USER = "postgres";
+    private static final String DB_PASSWORD = "Mayar123m";
     private static final int SNMP_PORT = 162;
     
     private Snmp snmp;
@@ -43,14 +43,14 @@ public class SNMPMonitoringServer implements CommandResponder {
 
     private void initializeDatabase() throws SQLException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("org.postgresql.Driver");
             dbConnection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             
             String createTableSQL = "CREATE TABLE IF NOT EXISTS snmp_traps (" +
-                    "id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "id SERIAL PRIMARY KEY," +
                     "name VARCHAR(255)," +
                     "ip VARCHAR(50)," +
-                    "port INT," +
+                    "port INTEGER," +
                     "description_of_error TEXT," +
                     "status VARCHAR(10)," +
                     "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
@@ -62,7 +62,7 @@ public class SNMPMonitoringServer implements CommandResponder {
             
             System.out.println("Database connection established successfully");
         } catch (ClassNotFoundException e) {
-            System.err.println("MySQL JDBC Driver not found");
+            System.err.println("PostgreSQL JDBC Driver not found");
             e.printStackTrace();
         }
     }
