@@ -5,6 +5,11 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
 import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,29 +25,69 @@ import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 public class SNMPClientServer {
-    private static final String MONITORING_SERVER_IP = "localhost"; // تغيير إلى IP خادم المراقبة
+
+    // SNMP Configuration
+    private static final String MONITORING_SERVER_IP = "localhost";
     private static final int MONITORING_SERVER_PORT = 162;
     private static final String COMMUNITY = "public";
+    
+    // AWS Database Configuration
+    private static final String URL = "jdbc:postgresql://end-point:5432/snmp";
+    private static final String USER = "postgres";
+    private static final String PASS = "password";
     
     private Snmp snmp;
     private String clientIP;
     private Timer monitoringTimer;
+    private Connection dbConnection;
     
     public SNMPClientServer() {
         try {
-            // تهيئة SNMP
+            // Initialize database connection
+            initializeDatabase();
+            
+            // Initialize SNMP
             TransportMapping transport = new DefaultUdpTransportMapping();
             snmp = new Snmp(transport);
             transport.listen();
             
-            // الحصول على عنوان IP الخاص بالخادم
+            // Get server IP address
             clientIP = InetAddress.getLocalHost().getHostAddress();
             
-            // بدء المراقبة
+            // Start monitoring
             startMonitoring();
             
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
+        }
+    }
+    
+    private void initializeDatabase() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+            dbConnection = DriverManager.getConnection(URL, USER, PASS);
+            createTablesIfNotExist();
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("PostgreSQL JDBC Driver not found", e);
+        }
+    }
+    
+    private void createTablesIfNotExist() throws SQLException {
+        String createTableSQL = """
+            CREATE TABLE IF NOT EXISTS system_metrics (
+                id SERIAL PRIMARY KEY,
+                timestamp TIMESTAMP NOT NULL,
+                client_ip VARCHAR(50) NOT NULL,
+                cpu_usage DOUBLE PRECISION,
+                memory_usage DOUBLE PRECISION,
+                disk_usage DOUBLE PRECISION,
+                error_type VARCHAR(50),
+                description TEXT
+            )
+        """;
+        
+        try (PreparedStatement stmt = dbConnection.prepareStatement(createTableSQL)) {
+            stmt.execute();
         }
     }
     
@@ -60,24 +105,55 @@ public class SNMPClientServer {
         OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
         MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
         
-        // فحص استخدام CPU
+        // Get system metrics
         double cpuLoad = osBean.getSystemLoadAverage();
-        if (cpuLoad > 0.8) { // 80% استخدام
-            sendTrap("CPU_USAGE_HIGH", "CPU usage is above 80%: " + (cpuLoad * 100) + "%");
-        }
-        
-        // فحص استخدام الذاكرة
         double memoryUsage = (double) memoryBean.getHeapMemoryUsage().getUsed() / 
                            memoryBean.getHeapMemoryUsage().getMax();
-        if (memoryUsage > 0.8) { // 80% استخدام
-            sendTrap("MEMORY_USAGE_HIGH", "Memory usage is above 80%: " + (memoryUsage * 100) + "%");
-        }
-        
-        // فحص مساحة القرص
         java.io.File root = new java.io.File("/");
         double diskUsage = 1 - ((double) root.getFreeSpace() / root.getTotalSpace());
-        if (diskUsage > 0.8) { // 80% استخدام
-            sendTrap("DISK_USAGE_HIGH", "Disk usage is above 80%: " + (diskUsage * 100) + "%");
+        
+        // Store metrics in database
+        storeMetrics(cpuLoad, memoryUsage, diskUsage, null, null);
+        
+        // Check thresholds and send traps
+        if (cpuLoad > 0.8) {
+            String description = "CPU usage is above 80%: " + (cpuLoad * 100) + "%";
+            sendTrap("CPU_USAGE_HIGH", description);
+            storeMetrics(cpuLoad, memoryUsage, diskUsage, "CPU_USAGE_HIGH", description);
+        }
+        
+        if (memoryUsage > 0.8) {
+            String description = "Memory usage is above 80%: " + (memoryUsage * 100) + "%";
+            sendTrap("MEMORY_USAGE_HIGH", description);
+            storeMetrics(cpuLoad, memoryUsage, diskUsage, "MEMORY_USAGE_HIGH", description);
+        }
+        
+        if (diskUsage > 0.8) {
+            String description = "Disk usage is above 80%: " + (diskUsage * 100) + "%";
+            sendTrap("DISK_USAGE_HIGH", description);
+            storeMetrics(cpuLoad, memoryUsage, diskUsage, "DISK_USAGE_HIGH", description);
+        }
+    }
+    
+    private void storeMetrics(double cpuUsage, double memoryUsage, double diskUsage, 
+                            String errorType, String description) {
+        String insertSQL = """
+            INSERT INTO system_metrics 
+            (timestamp, client_ip, cpu_usage, memory_usage, disk_usage, error_type, description)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """;
+        
+        try (PreparedStatement stmt = dbConnection.prepareStatement(insertSQL)) {
+            stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            stmt.setString(2, clientIP);
+            stmt.setDouble(3, cpuUsage);
+            stmt.setDouble(4, memoryUsage);
+            stmt.setDouble(5, diskUsage);
+            stmt.setString(6, errorType);
+            stmt.setString(7, description);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
     
@@ -112,7 +188,22 @@ public class SNMPClientServer {
         }
     }
     
+    public void close() {
+        if (monitoringTimer != null) {
+            monitoringTimer.cancel();
+        }
+        if (dbConnection != null) {
+            try {
+                dbConnection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
     public static void main(String[] args) {
-        new SNMPClientServer();
+        SNMPClientServer client = new SNMPClientServer();
+        // Add shutdown hook to properly close resources
+        Runtime.getRuntime().addShutdownHook(new Thread(client::close));
     }
 } 
