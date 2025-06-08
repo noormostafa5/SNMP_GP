@@ -1,0 +1,4 @@
+2025-06-08 17:55:38.189 [main] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 162
+2025-06-08 18:00:44.302 [com.mycompany.snmpmonitoringserver.SNMPMonitoringServer.main()] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 162
+2025-06-08 18:03:43.963 [com.mycompany.snmpmonitoringserver.SNMPMonitoringServer.main()] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 162
+2025-06-08 18:06:00.789 [main] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 162

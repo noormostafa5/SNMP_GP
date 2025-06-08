@@ -1,0 +1,11 @@
+2025-06-08 18:16:12.269 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started
+2025-06-08 18:16:14.181 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-08 18:23:17.290 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started
+2025-06-08 18:23:19.113 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-08 18:27:03.996 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started
+2025-06-08 18:27:05.633 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-08 18:35:44.773 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started
+2025-06-08 18:35:46.422 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-08 18:36:52.088 [main] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 161
+2025-06-08 18:38:10.103 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started
+2025-06-08 18:38:11.874 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
