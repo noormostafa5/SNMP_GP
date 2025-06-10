@@ -8,12 +8,12 @@ import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 public class DatabaseManager {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
     private static final String DB_URL = "jdbc:postgresql://end-point:5432/snmp";
     private static final String USER = "postgres";
     private static final String PASS = "aws-rds-password";
+
 
     private Connection connection;
 

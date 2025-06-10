@@ -51,7 +51,7 @@ public class SNMPClientServer {
             } catch (Exception e) {
                 logger.error("Error in monitoring cycle", e);
             }
-        }, 0, 10, TimeUnit.SECONDS);
+        }, 0, 60, TimeUnit.SECONDS);
 
         logger.info("SNMP Client Server started");
     }

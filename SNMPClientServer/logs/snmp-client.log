@@ -1505,3 +1505,522 @@ Disk Status:
 2025-06-10 17:37:32.687 [Thread-1] INFO  c.m.s.SNMPClientServer - SNMP Client Server stopped
 2025-06-10 17:37:34.846 [Thread-0] INFO  c.m.s.DatabaseManager - Database connection closed
 2025-06-10 17:37:34.846 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 17:45:57.144 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 17:46:04.480 [main] ERROR c.m.s.DatabaseManager - Error initializing database
+org.postgresql.util.PSQLException: The connection attempt failed.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:358)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:273)
+	at org.postgresql.Driver.makeConnection(Driver.java:446)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:682)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:230)
+	at com.mycompany.snmpmonitoringserver.DatabaseManager.initializeDatabase(DatabaseManager.java:26)
+	at com.mycompany.snmpmonitoringserver.DatabaseManager.<init>(DatabaseManager.java:21)
+	at com.mycompany.snmpmonitoringserver.SNMPMonitoringServer.<init>(SNMPMonitoringServer.java:30)
+	at com.mycompany.snmpmonitoringserver.SNMPMonitoringServer.main(SNMPMonitoringServer.java:131)
+Caused by: java.net.UnknownHostException: end-point
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:567)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:760)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:243)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:98)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:136)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:262)
+	... 10 common frames omitted
+2025-06-10 17:46:04.549 [main] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 161
+2025-06-10 17:46:09.379 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 17:47:04.638 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 17:47:04.760 [main] ERROR c.m.s.DatabaseManager - Error initializing database
+org.postgresql.util.PSQLException: The connection attempt failed.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:358)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:273)
+	at org.postgresql.Driver.makeConnection(Driver.java:446)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:682)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:230)
+	at com.mycompany.snmpmonitoringserver.DatabaseManager.initializeDatabase(DatabaseManager.java:28)
+	at com.mycompany.snmpmonitoringserver.DatabaseManager.<init>(DatabaseManager.java:23)
+	at com.mycompany.snmpmonitoringserver.SNMPMonitoringServer.<init>(SNMPMonitoringServer.java:30)
+	at com.mycompany.snmpmonitoringserver.SNMPMonitoringServer.main(SNMPMonitoringServer.java:131)
+Caused by: java.net.UnknownHostException: end-my-snmp-public.ca5cwqo86nt5.us-east-1.rds.amazonaws.com
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:567)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:760)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:243)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:98)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:136)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:262)
+	... 10 common frames omitted
+2025-06-10 17:47:04.853 [main] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 161
+2025-06-10 17:47:12.257 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 17:47:30.299 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 17:47:31.830 [main] INFO  c.m.s.DatabaseManager - Database initialized successfully
+2025-06-10 17:47:31.871 [main] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 161
+2025-06-10 17:47:44.252 [main] INFO  c.m.s.SNMPClientServer - No arguments specified, using default values with dynamic host info.
+2025-06-10 17:47:44.253 [main] INFO  c.m.s.SNMPClientServer - Client reporting as: DESKTOP-Q1PR7AE (192.168.198.1)
+2025-06-10 17:47:44.718 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started
+2025-06-10 17:47:46.080 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:47:46.083 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:47:46.083 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:47:46.083 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616639, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 10.11; 1.3.6.1.4.1.9999.1.7 = 87.09; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:47:46.085 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:47:46
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 10.11%
+Memory Usage: 87.09%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:47:46.222 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:47:55.776 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:47:55.777 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:47:55.777 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:47:55.777 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616640, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 9.25; 1.3.6.1.4.1.9999.1.7 = 87.34; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:47:55.777 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:47:55
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 9.25%
+Memory Usage: 87.34%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:47:55.910 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:48:05.783 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:48:05.784 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:48:05.784 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:48:05.784 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616641, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 5.84; 1.3.6.1.4.1.9999.1.7 = 86.74; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:48:05.784 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:48:05
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 5.84%
+Memory Usage: 86.74%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:48:05.914 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:48:15.770 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:48:15.770 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:48:15.770 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:48:15.770 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616642, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 11.82; 1.3.6.1.4.1.9999.1.7 = 86.15; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:48:15.770 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:48:15
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 11.82%
+Memory Usage: 86.15%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:48:15.901 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:48:25.773 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:48:25.773 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:48:25.774 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:48:25.774 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616643, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 4.89; 1.3.6.1.4.1.9999.1.7 = 86.39; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:48:25.775 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:48:25
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 4.89%
+Memory Usage: 86.39%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:48:25.908 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:48:35.758 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:48:35.758 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:48:35.758 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:48:35.758 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616644, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 6.33; 1.3.6.1.4.1.9999.1.7 = 85.91; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:48:35.758 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:48:35
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 6.33%
+Memory Usage: 85.91%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:48:35.889 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:48:45.770 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:48:45.771 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:48:45.771 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:48:45.771 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616645, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 12.24; 1.3.6.1.4.1.9999.1.7 = 87.18; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:48:45.771 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:48:45
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 12.24%
+Memory Usage: 87.18%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:48:45.904 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:48:55.773 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:48:55.773 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:48:55.773 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:48:55.773 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616646, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 5.78; 1.3.6.1.4.1.9999.1.7 = 86.21; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:48:55.773 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:48:55
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 5.78%
+Memory Usage: 86.21%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:48:55.904 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:49:05.753 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:49:05.753 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:49:05.753 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:49:05.753 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616647, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 4.41; 1.3.6.1.4.1.9999.1.7 = 85.96; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:49:05.753 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:49:05
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 4.41%
+Memory Usage: 85.96%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:49:05.885 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:49:15.764 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:49:15.765 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:49:15.765 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:49:15.765 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616648, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 4.63; 1.3.6.1.4.1.9999.1.7 = 85.06; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:49:15.765 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:49:15
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 4.63%
+Memory Usage: 85.06%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:49:15.895 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:49:25.771 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:49:25.772 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:49:25.772 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:49:25.772 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=2101616649, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 13.45; 1.3.6.1.4.1.9999.1.7 = 85.15; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:49:25.772 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:49:25
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 13.45%
+Memory Usage: 85.15%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:49:25.903 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:49:34.411 [Thread-1] INFO  c.m.s.SNMPClientServer - SNMP Client Server stopped
+2025-06-10 17:49:34.542 [Thread-0] INFO  c.m.s.DatabaseManager - Database connection closed
+2025-06-10 17:49:34.543 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 17:50:08.646 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 17:50:10.192 [main] INFO  c.m.s.DatabaseManager - Database initialized successfully
+2025-06-10 17:50:10.230 [main] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 161
+2025-06-10 17:50:13.110 [main] INFO  c.m.s.SNMPClientServer - No arguments specified, using default values with dynamic host info.
+2025-06-10 17:50:13.112 [main] INFO  c.m.s.SNMPClientServer - Client reporting as: DESKTOP-Q1PR7AE (192.168.198.1)
+2025-06-10 17:50:13.618 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started
+2025-06-10 17:50:14.973 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:50:14.977 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:50:14.977 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:50:14.977 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=800009879, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 17.96; 1.3.6.1.4.1.9999.1.7 = 86.18; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:50:14.978 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:50:14
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 17.96%
+Memory Usage: 86.18%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:50:15.114 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:50:34.678 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:50:34.678 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:50:34.679 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:50:34.679 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=800009880, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 2.99; 1.3.6.1.4.1.9999.1.7 = 84.80; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:50:34.679 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:50:34
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 2.99%
+Memory Usage: 84.80%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:50:34.810 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:50:54.668 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:50:54.668 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:50:54.669 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:50:54.669 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=800009881, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 14.61; 1.3.6.1.4.1.9999.1.7 = 85.66; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:50:54.669 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:50:54
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 14.61%
+Memory Usage: 85.66%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:50:54.801 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:51:14.666 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:51:14.667 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:51:14.667 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:51:14.667 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=800009882, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 6.99; 1.3.6.1.4.1.9999.1.7 = 85.22; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:51:14.667 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:51:14
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 6.99%
+Memory Usage: 85.22%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:51:14.802 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:51:27.270 [Thread-1] INFO  c.m.s.SNMPClientServer - SNMP Client Server stopped
+2025-06-10 17:51:27.398 [Thread-0] INFO  c.m.s.DatabaseManager - Database connection closed
+2025-06-10 17:51:27.398 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 17:51:34.352 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 17:51:35.877 [main] INFO  c.m.s.DatabaseManager - Database initialized successfully
+2025-06-10 17:51:35.915 [main] INFO  c.m.s.SNMPMonitoringServer - Starting SNMP Monitoring Server on port 161
+2025-06-10 17:51:37.478 [main] INFO  c.m.s.SNMPClientServer - No arguments specified, using default values with dynamic host info.
+2025-06-10 17:51:37.480 [main] INFO  c.m.s.SNMPClientServer - Client reporting as: DESKTOP-Q1PR7AE (192.168.198.1)
+2025-06-10 17:51:37.953 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started
+2025-06-10 17:51:39.290 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:51:39.293 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:51:39.293 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:51:39.293 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=1097796134, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 9.25; 1.3.6.1.4.1.9999.1.7 = 85.46; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:51:39.294 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:51:39
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 9.25%
+Memory Usage: 85.46%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:51:39.432 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:52:39.029 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 17:52:39.029 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - --- PDU Received by CommandResponder ---
+2025-06-10 17:52:39.030 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - PDU is not null, processing trap...
+2025-06-10 17:52:39.030 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Inside processTrap method. PDU details: TRAP[requestID=1097796135, errorStatus=Success(0), errorIndex=0, VBS[1.3.6.1.4.1.9999.1.2 = DESKTOP-Q1PR7AE; 1.3.6.1.4.1.9999.1.3 = 192.168.198.1; 1.3.6.1.4.1.9999.1.4 = 161; 1.3.6.1.4.1.9999.1.5 = CLEAR; 1.3.6.1.4.1.9999.1.6 = 9.17; 1.3.6.1.4.1.9999.1.7 = 85.42; 1.3.6.1.4.1.9999.1.8.1 = ]]
+2025-06-10 17:52:39.030 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.SNMPMonitoringServer - Received health report from DESKTOP-Q1PR7AE:
+============================================
+Server Information:
+============================================
+Server Name: DESKTOP-Q1PR7AE
+Server IP: 192.168.198.1
+Server Port: 161
+Last Update: 2025-06-10 17:52:39
+
+System Status: CLEAR
+
+Resource Usage:
+--------------
+CPU Usage: 9.17%
+Memory Usage: 85.42%
+
+Disk Status:
+-----------
+  
+
+============================================
+2025-06-10 17:52:39.162 [DefaultUDPTransportMapping_127.0.0.1/161] INFO  c.m.s.DatabaseManager - Server report saved to database for server: DESKTOP-Q1PR7AE
+2025-06-10 17:52:58.895 [Thread-1] INFO  c.m.s.SNMPClientServer - SNMP Client Server stopped
+2025-06-10 17:52:59.017 [Thread-0] INFO  c.m.s.DatabaseManager - Database connection closed
+2025-06-10 17:52:59.017 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
