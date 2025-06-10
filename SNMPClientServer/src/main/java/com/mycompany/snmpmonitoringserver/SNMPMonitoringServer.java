@@ -1,107 +1,115 @@
 package com.mycompany.snmpmonitoringserver;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snmp4j.CommandResponder;
-import org.snmp4j.CommandResponderEvent;
-import org.snmp4j.PDU;
-import org.snmp4j.Snmp;
-import org.snmp4j.TransportMapping;
-import org.snmp4j.mp.MPv1;
-import org.snmp4j.mp.MPv2c;
-import org.snmp4j.smi.OID;
-import org.snmp4j.smi.UdpAddress;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
+
+// Import DatabaseManager from the client package (as per current structure)
+import com.mycompany.snmpclientserver.DatabaseManager;
+
 
 public class SNMPMonitoringServer {
     private static final Logger logger = LoggerFactory.getLogger(SNMPMonitoringServer.class);
-    private final Snmp snmp;
     private final Map<String, ServerStatus> serverStatuses;
     private final int port;
-    private final DatabaseManager databaseManager;
+    private DatagramSocket socket;
+    private final ObjectMapper objectMapper;
 
     public SNMPMonitoringServer(int port) throws IOException {
         this.port = port;
         this.serverStatuses = new ConcurrentHashMap<>();
-        this.databaseManager = new DatabaseManager();
-
-        TransportMapping transport = new DefaultUdpTransportMapping(new UdpAddress("127.0.0.1/" + port));
-        this.snmp = new Snmp(transport);
-        snmp.getMessageDispatcher().addMessageProcessingModel(new MPv1());
-        snmp.getMessageDispatcher().addMessageProcessingModel(new MPv2c());
-
-        snmp.addCommandResponder(new CommandResponder() {
-            @Override
-            public void processPdu(CommandResponderEvent event) {
-                logger.info("--- PDU Received by CommandResponder ---");
-                PDU pdu = event.getPDU();
-                if (pdu != null) {
-                    logger.info("PDU is not null, processing trap...");
-                    processTrap(pdu);
-                } else {
-                    logger.warn("Received a null PDU from event: {}", event);
-                }
-            }
-        });
-
-        transport.listen();
-    }
-
-    private void processTrap(PDU pdu) {
-        logger.info("Inside processTrap method. PDU details: {}", pdu);
-        try {
-            String serverName = pdu.getVariable(new OID("1.3.6.1.4.1.9999.1.2")).toString();
-            String serverIP = pdu.getVariable(new OID("1.3.6.1.4.1.9999.1.3")).toString();
-            int serverPort = pdu.getVariable(new OID("1.3.6.1.4.1.9999.1.4")).toInt();
-            String alarmStatus = pdu.getVariable(new OID("1.3.6.1.4.1.9999.1.5")).toString();
-            double cpuUsage = Double.parseDouble(pdu.getVariable(new OID("1.3.6.1.4.1.9999.1.6")).toString());
-            double memoryUsage = Double.parseDouble(pdu.getVariable(new OID("1.3.6.1.4.1.9999.1.7")).toString());
-
-            // استخراج معلومات القرص
-            StringBuilder diskStatus = new StringBuilder();
-            int diskIndex = 1;
-            while (true) {
-                try {
-                    String diskInfo = pdu.getVariable(new OID("1.3.6.1.4.1.9999.1.8." + diskIndex)).toString();
-                    diskStatus.append("  ").append(diskInfo).append("\n");
-                    diskIndex++;
-                } catch (Exception e) {
-                    break;
-                }
-            }
-
-            ServerStatus status = new ServerStatus(
-                    serverName, serverIP, serverPort,
-                    cpuUsage, memoryUsage, diskStatus.toString(),
-                    alarmStatus.equals("ALARMED")
-            );
-
-            serverStatuses.put(serverName, status);
-            logger.info("Received health report from {}:\n{}", serverName, status);
-
-            databaseManager.saveServerReport(status);
-
-        } catch (Exception e) {
-            logger.error("Error processing trap", e);
-        }
+        this.objectMapper = new ObjectMapper();
     }
 
     public void start() {
-        logger.info("Starting SNMP Monitoring Server on port {}", port);
+        try {
+            socket = new DatagramSocket(port);
+            logger.info("SNMP Monitoring Server started on port {}", port);
+
+            // Start listening for incoming reports
+            new Thread(this::listenForReports).start();
+
+        } catch (SocketException e) {
+            logger.error("Error starting server socket: {}", e.getMessage());
+        } catch (IOException e) {
+            logger.error("Error starting server: {}", e.getMessage());
+        }
+    }
+
+    private void listenForReports() {
+        byte[] buffer = new byte[1024];
+        while (!socket.isClosed()) {
+            try {
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                socket.receive(packet);
+
+                String receivedJson = new String(packet.getData(), 0, packet.getLength());
+                processReport(receivedJson);
+
+            } catch (IOException e) {
+                if (!socket.isClosed()) {
+                    logger.error("Error receiving report: {}", e.getMessage());
+                }
+            }
+        }
+    }
+
+    private void processReport(String jsonString) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonString);
+            String reportType = rootNode.get("reportType").asText();
+
+            if ("health_report".equals(reportType)) {
+                String serverName = rootNode.get("serverName").asText();
+                String serverIp = rootNode.get("serverIp").asText();
+                double cpuUsage = rootNode.get("cpuUsage").asDouble();
+                double memoryUsage = rootNode.get("memoryUsage").asDouble();
+                double diskUsage = rootNode.get("diskUsage").asDouble();
+                double networkUsage = rootNode.get("networkUsage").asDouble();
+                boolean isAlarmed = rootNode.get("isAlarmed").asBoolean();
+
+                DatabaseManager.saveReport(
+                        serverName, serverIp, cpuUsage, memoryUsage, diskUsage, networkUsage, isAlarmed
+                );
+                logger.info("Received health report from {}: CPU={:.2f}%%, Mem={:.2f}%%, Disk={:.2f}%%, Alarmed={}",
+                        serverName, cpuUsage, memoryUsage, diskUsage, isAlarmed);
+
+            } else if ("error_report".equals(reportType)) {
+                String serverName = rootNode.get("serverName").asText();
+                String serverIp = rootNode.get("serverIp").asText();
+                String description = rootNode.get("description").asText();
+                long timestamp = rootNode.get("timestamp").asLong();
+
+                DatabaseManager.saveErrorReport(
+                        serverName, serverIp, description, timestamp
+                );
+                logger.warn("Received error report from {}: {}", serverName, description);
+
+            } else {
+                logger.warn("Unknown report type received: {}", reportType);
+            }
+
+        } catch (IOException e) {
+            logger.error("Error parsing JSON report: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error processing report: {}", e.getMessage());
+        }
     }
 
     public void stop() {
-        try {
-            snmp.close();
-            databaseManager.close();
-            logger.info("SNMP Monitoring Server stopped");
-        } catch (IOException e) {
-            logger.error("Error stopping SNMP Monitoring Server", e);
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
         }
+        DatabaseManager.close();
+        logger.info("SNMP Monitoring Server stopped");
     }
 
     public Map<String, ServerStatus> getServerStatuses() {
@@ -128,6 +136,8 @@ public class SNMPMonitoringServer {
         }
 
         try {
+            DatabaseManager.initialize();
+
             SNMPMonitoringServer server = new SNMPMonitoringServer(port);
 
             Runtime.getRuntime().addShutdownHook(new Thread(server::stop));

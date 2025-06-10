@@ -2024,3 +2024,92 @@ Disk Status:
 2025-06-10 17:52:58.895 [Thread-1] INFO  c.m.s.SNMPClientServer - SNMP Client Server stopped
 2025-06-10 17:52:59.017 [Thread-0] INFO  c.m.s.DatabaseManager - Database connection closed
 2025-06-10 17:52:59.017 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 19:53:01.217 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 19:53:02.776 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table server_reports created or already exists
+2025-06-10 19:53:02.906 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table error_reports created or already exists
+2025-06-10 19:53:02.906 [main] INFO  c.m.snmpclientserver.DatabaseManager - Database connection established successfully
+2025-06-10 19:53:03.001 [main] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server started on port 161
+2025-06-10 19:53:09.869 [main] ERROR c.m.s.SNMPClientServer - Usage: java -jar SNMPClientServer.jar <serverName> <serverIp> <port> <monitoringIp> <monitoringPort>
+2025-06-10 19:53:09.870 [main] ERROR c.m.s.SNMPClientServer - Or:    java -jar SNMPClientServer.jar <serverIp> <port> <monitoringIp> <monitoringPort> (for default serverName 'BTS-1')
+2025-06-10 19:53:14.452 [main] ERROR c.m.s.SNMPClientServer - Usage: java -jar SNMPClientServer.jar <serverName> <serverIp> <port> <monitoringIp> <monitoringPort>
+2025-06-10 19:53:14.454 [main] ERROR c.m.s.SNMPClientServer - Or:    java -jar SNMPClientServer.jar <serverIp> <port> <monitoringIp> <monitoringPort> (for default serverName 'BTS-1')
+2025-06-10 19:53:28.482 [Thread-0] INFO  c.m.snmpclientserver.DatabaseManager - Database connection closed
+2025-06-10 19:53:28.482 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 19:53:50.506 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 19:53:52.173 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table server_reports created or already exists
+2025-06-10 19:53:52.302 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table error_reports created or already exists
+2025-06-10 19:53:52.303 [main] INFO  c.m.snmpclientserver.DatabaseManager - Database connection established successfully
+2025-06-10 19:53:52.441 [main] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server started on port 161
+2025-06-10 19:53:57.860 [main] INFO  c.m.s.SNMPClientServer - No arguments specified, using default values with dynamic host info.
+2025-06-10 19:53:57.862 [main] INFO  c.m.s.SNMPClientServer - Client reporting as: DESKTOP-Q1PR7AE (192.168.198.1)
+2025-06-10 19:53:58.677 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started
+2025-06-10 19:54:00.339 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Health report sent to monitoring server
+2025-06-10 19:54:00.349 [Thread-1] ERROR c.m.s.SNMPMonitoringServer - Error parsing JSON report: Unexpected character ('�' (code 65533 / 0xfffd)): Expected space separating root-level values
+ at [Source: (String)"0��\u0002\u0001\u0001\u0004\u0006public���\u0002\u0004\u001C�\u0009<\u0002\u0001\u0000\u0002\u0001\u00000��0\u001C\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0001\u0002\u0004\u000FDESKTOP-Q1PR7AE0\u001A\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0001\u0003\u0004192.168.198.10\u000F\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0001\u0004\u0002\u0002\u0000�0\u0014\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0001\u0005\u0004\u0007ALARMED0\u0011\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0001\u0006\u0004\u00049.550\u0012\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0001\u0007\u0004\u000591.420\u000E\u0006
++\u0006\u0001\u0004\u0001�\u000F\u0001\u0008\u0001\u0004\u0000"; line: 1, column: 3]
+2025-06-10 19:54:01.439 [pool-1-thread-1] INFO  c.m.snmpclientserver.AlertSender - Trap sent to monitoring server: Memory usage is high: 91.42%
+
+2025-06-10 19:54:01.439 [Thread-1] ERROR c.m.s.SNMPMonitoringServer - Error parsing JSON report: Unexpected character ('�' (code 65533 / 0xfffd)): Expected space separating root-level values
+ at [Source: (String)"0��\u0002\u0001\u0001\u0004\u0006public���\u0002\u0004\u001C�\u0009=\u0002\u0001\u0000\u0002\u0001\u00000��0\u001C\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0002\u0001\u0004\u000FDESKTOP-Q1PR7AE0\u001A\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0002\u0002\u0004192.168.198.10*\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0002\u0003\u0004\u001DMemory usage is high: 91.42%
+0(\u0006\u0009+\u0006\u0001\u0004\u0001�\u000F\u0002\u0004\u0004\u001B2025-06-10T19:54:01.4382968"; line: 1, column: 3]
+2025-06-10 19:54:20.311 [Thread-1] INFO  c.m.s.SNMPClientServer - SNMP Client Server stopped
+2025-06-10 19:54:20.390 [Thread-0] INFO  c.m.snmpclientserver.DatabaseManager - Database connection closed
+2025-06-10 19:54:20.392 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 19:55:03.886 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 19:55:05.626 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table server_reports created or already exists
+2025-06-10 19:55:05.754 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table error_reports created or already exists
+2025-06-10 19:55:05.755 [main] INFO  c.m.snmpclientserver.DatabaseManager - Database connection established successfully
+2025-06-10 19:55:05.949 [main] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server started on port 161
+2025-06-10 19:55:11.184 [main] ERROR c.m.s.SNMPClientServer - Usage: java -jar SNMPClientServer.jar <serverName> <serverIp> <port> <monitoringIp> <monitoringPort>
+2025-06-10 19:55:11.185 [main] ERROR c.m.s.SNMPClientServer - Or:    java -jar SNMPClientServer.jar <serverIp> <port> <monitoringIp> <monitoringPort> (for default serverName 'BTS-1')
+2025-06-10 19:56:06.651 [Thread-0] INFO  c.m.snmpclientserver.DatabaseManager - Database connection closed
+2025-06-10 19:56:06.652 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 19:58:38.423 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 19:58:40.357 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table server_reports created or already exists
+2025-06-10 19:58:40.487 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table error_reports created or already exists
+2025-06-10 19:58:40.489 [main] INFO  c.m.snmpclientserver.DatabaseManager - Database connection established successfully
+2025-06-10 19:58:40.695 [main] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server started on port 161
+2025-06-10 19:58:47.460 [main] ERROR c.m.s.SNMPClientServer - Usage: java -jar SNMPClientServer.jar <serverName> <serverIp> <port> <monitoringIp> <monitoringPort>
+2025-06-10 19:58:47.462 [main] ERROR c.m.s.SNMPClientServer - Or:    java -jar SNMPClientServer.jar <serverIp> <port> <monitoringIp> <monitoringPort> (for default serverName 'BTS-1')
+2025-06-10 20:01:01.471 [Thread-0] INFO  c.m.snmpclientserver.DatabaseManager - Database connection closed
+2025-06-10 20:01:01.472 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 20:03:45.295 [main] INFO  c.m.s.SNMPMonitoringServer - No port specified, using default port: 161
+2025-06-10 20:03:47.054 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table server_reports created or already exists
+2025-06-10 20:03:47.185 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table error_reports created or already exists
+2025-06-10 20:03:47.186 [main] INFO  c.m.snmpclientserver.DatabaseManager - Database connection established successfully
+2025-06-10 20:03:47.335 [main] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server started on port 161
+2025-06-10 20:03:55.160 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table server_reports created or already exists
+2025-06-10 20:03:55.295 [main] INFO  c.m.snmpclientserver.DatabaseManager - Table error_reports created or already exists
+2025-06-10 20:03:55.296 [main] INFO  c.m.snmpclientserver.DatabaseManager - Database connection established successfully
+2025-06-10 20:03:55.497 [main] INFO  c.m.s.SNMPClientServer - SNMP Client Server started on port 162
+2025-06-10 20:03:56.986 [pool-1-thread-1] INFO  c.m.s.SNMPClientServer - Health report sent to monitoring server
+2025-06-10 20:03:57.124 [pool-1-thread-1] INFO  c.m.snmpclientserver.DatabaseManager - Health report saved successfully for server: BTS-1
+2025-06-10 20:03:57.126 [pool-1-thread-1] WARN  c.m.s.SNMPClientServer - Error report sent to monitoring server: Memory usage is high (91.27%).
+2025-06-10 20:03:57.142 [Thread-1] INFO  c.m.snmpclientserver.DatabaseManager - Health report saved successfully for server: BTS-1
+2025-06-10 20:03:57.143 [Thread-1] INFO  c.m.s.SNMPMonitoringServer - Received health report from BTS-1: CPU={:.2f}%%, Mem={:.2f}%%, Disk={:.2f}%%, Alarmed=0.0
+2025-06-10 20:03:57.274 [Thread-1] WARN  c.m.snmpclientserver.DatabaseManager - Error report saved successfully for server: BTS-1
+2025-06-10 20:03:57.275 [Thread-1] WARN  c.m.s.SNMPMonitoringServer - Received error report from BTS-1: Memory usage is high (91.27%).
+2025-06-10 20:04:55.610 [pool-1-thread-1] INFO  c.m.s.SNMPClientServer - Health report sent to monitoring server
+2025-06-10 20:04:55.741 [pool-1-thread-1] INFO  c.m.snmpclientserver.DatabaseManager - Health report saved successfully for server: BTS-1
+2025-06-10 20:04:55.742 [pool-1-thread-1] WARN  c.m.s.SNMPClientServer - Error report sent to monitoring server: Memory usage is high (86.83%).
+2025-06-10 20:04:55.744 [Thread-1] INFO  c.m.snmpclientserver.DatabaseManager - Health report saved successfully for server: BTS-1
+2025-06-10 20:04:55.745 [Thread-1] INFO  c.m.s.SNMPMonitoringServer - Received health report from BTS-1: CPU={:.2f}%%, Mem={:.2f}%%, Disk={:.2f}%%, Alarmed=18.33069614304931
+2025-06-10 20:04:55.876 [Thread-1] WARN  c.m.snmpclientserver.DatabaseManager - Error report saved successfully for server: BTS-1
+2025-06-10 20:04:55.876 [Thread-1] WARN  c.m.s.SNMPMonitoringServer - Received error report from BTS-1: Memory usage is high (86.83%).
+2025-06-10 20:05:55.604 [pool-1-thread-1] INFO  c.m.s.SNMPClientServer - Health report sent to monitoring server
+2025-06-10 20:05:55.736 [pool-1-thread-1] INFO  c.m.snmpclientserver.DatabaseManager - Health report saved successfully for server: BTS-1
+2025-06-10 20:05:55.737 [pool-1-thread-1] WARN  c.m.s.SNMPClientServer - Error report sent to monitoring server: Memory usage is high (88.13%).
+2025-06-10 20:05:55.738 [Thread-1] INFO  c.m.snmpclientserver.DatabaseManager - Health report saved successfully for server: BTS-1
+2025-06-10 20:05:55.739 [Thread-1] INFO  c.m.s.SNMPMonitoringServer - Received health report from BTS-1: CPU={:.2f}%%, Mem={:.2f}%%, Disk={:.2f}%%, Alarmed=15.967402803672426
+2025-06-10 20:05:55.871 [Thread-1] WARN  c.m.snmpclientserver.DatabaseManager - Error report saved successfully for server: BTS-1
+2025-06-10 20:05:55.872 [Thread-1] WARN  c.m.s.SNMPMonitoringServer - Received error report from BTS-1: Memory usage is high (88.13%).
+2025-06-10 20:06:55.577 [pool-1-thread-1] INFO  c.m.s.SNMPClientServer - Health report sent to monitoring server
+2025-06-10 20:06:55.711 [pool-1-thread-1] INFO  c.m.snmpclientserver.DatabaseManager - Health report saved successfully for server: BTS-1
+2025-06-10 20:06:55.711 [Thread-1] INFO  c.m.snmpclientserver.DatabaseManager - Health report saved successfully for server: BTS-1
+2025-06-10 20:06:55.711 [Thread-1] INFO  c.m.s.SNMPMonitoringServer - Received health report from BTS-1: CPU={:.2f}%%, Mem={:.2f}%%, Disk={:.2f}%%, Alarmed=18.03646054546547
+2025-06-10 20:06:55.712 [pool-1-thread-1] WARN  c.m.s.SNMPClientServer - Error report sent to monitoring server: Memory usage is high (91.66%).
+2025-06-10 20:06:55.910 [Thread-1] WARN  c.m.snmpclientserver.DatabaseManager - Error report saved successfully for server: BTS-1
+2025-06-10 20:06:55.911 [Thread-1] WARN  c.m.s.SNMPMonitoringServer - Received error report from BTS-1: Memory usage is high (91.66%).
+2025-06-10 20:07:12.071 [Thread-0] INFO  c.m.snmpclientserver.DatabaseManager - Database connection closed
+2025-06-10 20:07:12.071 [Thread-0] INFO  c.m.s.SNMPMonitoringServer - SNMP Monitoring Server stopped
+2025-06-10 20:07:12.084 [Thread-1] INFO  c.m.snmpclientserver.DatabaseManager - Database connection closed
