@@ -1,7 +1,8 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: url('../technological-blue-background-circuit.jpg') no-repeat center center fixed;
+  background: url('/FrontEnd/background/bckg1.jpg') no-repeat center center fixed;
   background-size: cover;
+  /*background: url('') no-repeat center center fixed;  background-size: cover;*/
   margin: 0;
   padding: 0;
   color: #ffffff; /* White text for contrast */

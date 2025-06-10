@@ -6,13 +6,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SNMP Monitoring Dashboard</title>
-  <link rel="stylesheet" type="text/css" href="Styles/style.css">
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/FrontEnd/Styles/style.css">
 </head>
 <body>
   <main id="dashboard">
     <div class="header">
       <h1 class="title">SNMP Monitoring Dashboard</h1>
-      <button class="button">Logout</button>
+      <button class="button" onclick="window.location.href='${pageContext.request.contextPath}/logout'">Logout</button>
     </div>
 
     <div class="tabs">
