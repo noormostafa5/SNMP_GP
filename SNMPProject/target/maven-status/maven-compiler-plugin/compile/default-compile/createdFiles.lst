@@ -1,0 +1,4 @@
+com\mycompany\snmpproject\SNMPProject.class
+com\mycompany\snmpproject\SNMPClientServer$1.class
+com\mycompany\snmpproject\SNMPClientServer.class
+com\mycompany\snmpproject\snmpclient\SNMPTrapSender.class
