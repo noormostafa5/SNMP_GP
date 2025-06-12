@@ -6,9 +6,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SNMP Login</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/FrontEnd/Styles/style.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/FrontEnd/Styles/style.css?v=<%= System.currentTimeMillis() %>">
 </head>
-<body>
+<body style="background: url('${pageContext.request.contextPath}/FrontEnd/background/bckg1.jpg') no-repeat center center fixed; background-size: cover;">
     <div id="login-page" class="login-container">
         <div class="login-box">
             <h2 class="login-title">SNMP Platform Login</h2>
@@ -18,7 +18,7 @@
                 <input type="password" id="password" name="password" class="input" placeholder="Password" autocomplete="off" />
                 <button type="submit" class="button">Login</button>
             </form>
-            <p id="login-error" class="error-text"><%
+            <p id="login-error" class="error-text" style="color: red;"><%
                 if (request.getAttribute("error") != null) {
                     out.print(request.getAttribute("error"));
                 }

@@ -73,7 +73,7 @@ public class LoginServlet extends HttpServlet {
                 // Add delay to prevent brute force attacks
                 Thread.sleep(1000);
 
-                request.setAttribute("error", "Invalid credentials");
+                request.setAttribute("error", "login error check credentials");
                 request.setAttribute("firstName", firstName);
                 request.setAttribute("lastName", lastName);
                 request.getRequestDispatcher("/FrontEnd/login.jsp").forward(request, response);

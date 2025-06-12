@@ -1,7 +1,5 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: url('/FrontEnd/background/bckg1.jpg') no-repeat center center fixed;
-  background-size: cover;
   /*background: url('') no-repeat center center fixed;  background-size: cover;*/
   margin: 0;
   padding: 0;
@@ -155,13 +153,15 @@ body::after {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: rgba(255, 255, 255, 0.452);
+  background-color: #011C40;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   margin-bottom: 20px;
+  border-radius: 15px;
 }
 
 .header .title {
   margin: 0;
+  color: #ffffff;
 }
 
 .header .button {
@@ -179,7 +179,7 @@ body::after {
 }
 
 .tab-button {
-  background-color: #e2e8f0;
+  background-color: #0A2A57;
   border: none;
   padding: 0.75rem 1.5rem;
   margin: 0 0.25rem;
@@ -187,6 +187,7 @@ body::after {
   font-weight: 600;
   border-radius: 0.5rem 0.5rem 0 0;
   transition: background-color 0.3s;
+  color: #FFFFFF;
 }
 
 .tab-button.active {
@@ -197,10 +198,11 @@ body::after {
 .tab-content {
   display: none;
   padding: 1rem 2rem;
-  background: white;
-  border-radius: 0 0 1rem 1rem;
+  background: #011C40;
+  border-radius: 15px;
   max-width: 900px;
   margin: 0 auto 2rem;
+  backdrop-filter: blur(10px);
 }
 
 .tab-content.active {
@@ -213,8 +215,8 @@ h3 {
   margin: 25px 0 15px; /* Spacing for section titles */
 }
 
-#nodes{
-  background-color: rgba(255, 255, 255, 0.452);
+#nodes, #alarms, #rules {
+  background-color: transparent;
 }
 
 .card {
@@ -223,7 +225,7 @@ h3 {
   gap: 15px; /* Space between inputs and button */
   margin-bottom: 20px;
   padding: 20px;
-  background-color: rgba(255, 255, 255, 0.452);
+  background-color: #0A2A57;
   border-radius: 8px;
   align-items: center; /* Vertically align items */
   width: 100%; /* Ensure card takes full available width */
@@ -232,10 +234,12 @@ h3 {
 
 .input {
   padding: 0.5rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #3b82f6;
   border-radius: 0.5rem;
   flex: 1;
   font-size: 1rem;
+  background-color: #011133;
+  color: #ffffff;
 }
 
 .button {
@@ -261,13 +265,15 @@ table {
 }
 
 th, td {
-  border: 1px solid #cbd5e1;
+  border: 1px solid #0A2A57;
   padding: 0.5rem 0.75rem;
   text-align: left;
+  color: #ffffff;
 }
 
 th {
-  background-color: #e2e8f0;
+  background-color: #0A2A57;
+  color: #FFFFFF;
 }
 
 .actions-btn {
@@ -329,7 +335,7 @@ th {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: #011C40;
   padding: 1.5rem 2rem;
   border-radius: 1rem;
   width: 350px;
@@ -337,6 +343,8 @@ th {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  color: #ffffff;
+  border: 1px solid #0A2A57;
 }
 
 .close {
@@ -346,7 +354,7 @@ th {
   font-size: 1.5rem;
   font-weight: bold;
   cursor: pointer;
-  color: #64748b;
+  color: #ffffff;
 }
 
 .modal-content input {
