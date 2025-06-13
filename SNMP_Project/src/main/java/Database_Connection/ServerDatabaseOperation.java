@@ -8,7 +8,7 @@ import java.util.List;
 
 
 public class ServerDatabaseOperation {
-
+    //changes
     private static final String INSERT_SQL =
             "INSERT INTO server_reports (cpu_usage, ip_address, port, report_date, disk_usage, usage) " +
                     "VALUES (?, ?, ?, ?, ?, ?)";
