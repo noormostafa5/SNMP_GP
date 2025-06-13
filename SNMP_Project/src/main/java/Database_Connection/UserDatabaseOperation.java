@@ -14,7 +14,7 @@ import java.util.List;
 
 import Model.User;
 
-public class DatabaseOperation {
+public class UserDatabaseOperation {
     // Validation method for nationalID
     private static boolean isValidNationalID(String nationalID) {
         return nationalID != null && nationalID.matches("^\\d{20}$");

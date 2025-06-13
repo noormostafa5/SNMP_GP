@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 
-import Database_Connection.DatabaseOperation;
+import Database_Connection.UserDatabaseOperation;
 import Model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 
         try {
             // Attempt to login user
-            User user = DatabaseOperation.loginUser(firstName, lastName, password);
+            User user = UserDatabaseOperation.loginUser(firstName, lastName, password);
 
             if (user != null) {
                 // Invalidate any existing session to prevent session fixation
