@@ -6,23 +6,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SNMP Monitoring Dashboard</title>
-  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/FrontEnd/Styles/style.css?v=<%= System.currentTimeMillis() %>">
+  <link rel="stylesheet" type="text/css" href="../Styles/index.css">
+  <style>
+    body {
+      background-image: url('../background/bckg1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
-<body style="background: url('${pageContext.request.contextPath}/FrontEnd/background/bckg1.jpg') no-repeat center center fixed; background-size: cover;">
+<body>
   <main id="dashboard">
     <div class="header">
       <h1 class="title">SNMP Monitoring Dashboard</h1>
-      <button class="button" onclick="window.location.href='${pageContext.request.contextPath}/logout'">Logout</button>
+      <a href="../Pages/welcome.jsp" class="button">Logout</a>
     </div>
 
     <div class="tabs">
-      <button class="tab-button active" data-tab="nodes">Nodes</button>
-      <button class="tab-button" data-tab="alarms">Alarms</button>
-      <button class="tab-button" data-tab="rules">Action Rules</button>
+      <a href="dashboard.jsp" class="tab-button active">Nodes</a>
+      <a href="alarms.jsp" class="tab-button">Alarms</a>
+      <a href="rules.jsp" class="tab-button">Action Rules</a>
     </div>
 
     <!-- Nodes Tab -->
-    <div id="nodes" class="tab-content active">
+    <div class="tab-content active">
       <div class="card">
         <input id="nodeName" class="input" placeholder="Node Name" />
         <input id="nodeIP" class="input" placeholder="IP Address" />
@@ -34,46 +45,6 @@
       <table id="nodesTable">
         <thead>
           <tr><th>Name</th><th>IP</th><th>Port</th><th>Actions</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <!-- Alarms Tab -->
-    <div id="alarms" class="tab-content">
-      <div class="card">
-        <input id="alarmNode" class="input" placeholder="Node" />
-        <input id="alarmDesc" class="input" placeholder="Description" />
-        <select id="alarmStatus" class="input">
-          <option value="Active">Active</option>
-          <option value="Clear">Clear</option>
-        </select>
-        <input id="alarmTimestamp" class="input" type="datetime-local" />
-        <button class="button">Add Alarm</button>
-      </div>
-
-      <h3>Alarms List</h3>
-      <table id="alarmsTable">
-        <thead>
-          <tr><th>Node</th><th>Description</th><th>Status</th><th>Timestamp</th><th>Actions</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <!-- Rules Tab -->
-    <div id="rules" class="tab-content">
-      <div class="card">
-        <input id="ruleNodeId" class="input" placeholder="Node ID" />
-        <input id="ruleActionType" class="input" placeholder="Action Type (SMS, Email, RunScript)" />
-        <input id="ruleTarget" class="input" placeholder="MSISDN / Email / Script Path" />
-        <button class="button">Add Rule</button>
-      </div>
-
-      <h3>Action Rules List</h3>
-      <table id="rulesTable">
-        <thead>
-          <tr><th>Node ID</th><th>Action Type</th><th>Target</th><th>Actions</th></tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -133,26 +104,6 @@
       </div>
     </div>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const tabButtons = document.querySelectorAll('.tab-button');
-      const tabContents = document.querySelectorAll('.tab-content');
-
-      tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          // Deactivate all tabs
-          tabButtons.forEach(btn => btn.classList.remove('active'));
-          tabContents.forEach(content => content.classList.remove('active'));
-
-          // Activate the clicked tab
-          button.classList.add('active');
-          const tabId = button.getAttribute('data-tab');
-          document.getElementById(tabId).classList.add('active');
-        });
-      });
-    });
-  </script>
 
 </body>
 </html>

@@ -1,0 +1,314 @@
+/* Modern Signup Page Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: url('../technological-blue-background-circuit.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.signup-container {
+    width: 1000px;
+    min-height: 600px;
+    background: rgba(0, 0, 20, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    display: flex;
+}
+
+.signup-content {
+    flex: 1;
+    padding: 30px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.signup-header {
+    margin-bottom: 20px;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+}
+
+.signup-header h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    background: linear-gradient(45deg, #3f51b5, #7b9cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: #ccc;
+    font-size: 1rem;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.input-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon i {
+    position: absolute;
+    left: 15px;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.input-icon .toggle-password {
+    left: auto;
+    right: 15px;
+    cursor: pointer;
+}
+
+.input {
+    width: 100%;
+    padding: 12px 45px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.input:focus {
+    border-color: #7b9cff;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+
+.input:focus + i {
+    color: #7b9cff;
+}
+
+.terms-group {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+}
+
+.checkbox {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    accent-color: #3f51b5;
+}
+
+.terms-group label {
+    color: #ccc;
+    font-size: 0.85rem;
+}
+
+.terms-group a {
+    color: #7b9cff;
+    text-decoration: none;
+}
+
+.signup-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #3f51b5;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: auto;
+}
+
+.signup-button:hover {
+    background: #303f9f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(63, 81, 181, 0.3);
+}
+
+.social-signup {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.social-signup p {
+    color: #ccc;
+    margin-bottom: 12px;
+    position: relative;
+    font-size: 0.9rem;
+}
+
+.social-signup p::before,
+.social-signup p::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.social-signup p::before {
+    left: 0;
+}
+
+.social-signup p::after {
+    right: 0;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.social-button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.3s ease;
+}
+
+.social-button.google:hover {
+    background: #DB4437;
+}
+
+.social-button.github:hover {
+    background: #333;
+}
+
+.login-link {
+    margin-top: 15px;
+    text-align: center;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.login-link a {
+    color: #7b9cff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-image {
+    flex: 1;
+    background: linear-gradient(135deg, #3f51b5, #303f9f);
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.signup-image::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover;
+    opacity: 0.1;
+}
+
+.image-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.image-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.image-content p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.features-list {
+    text-align: left;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+.feature-item i {
+    color: #fff;
+    margin-right: 10px;
+}
+
+.error-text {
+    color: #ff4444;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .signup-container {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+    }
+
+    .signup-image {
+        display: none;
+    }
+
+    .signup-content {
+        padding: 20px;
+    }
+
+    .social-buttons {
+        flex-direction: column;
+    }
+}
