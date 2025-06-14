@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 // Import DatabaseManager from the client package (as per current structure)
 import com.mycompany.snmpclientserver.DatabaseManager;
 
+// Removed snmp4j imports
 
 public class SNMPMonitoringServer {
     private static final Logger logger = LoggerFactory.getLogger(SNMPMonitoringServer.class);
@@ -34,7 +35,6 @@ public class SNMPMonitoringServer {
             socket = new DatagramSocket(port);
             logger.info("SNMP Monitoring Server started on port {}", port);
 
-            // Start listening for incoming reports
             new Thread(this::listenForReports).start();
 
         } catch (SocketException e) {
@@ -91,6 +91,7 @@ public class SNMPMonitoringServer {
                 DatabaseManager.saveErrorReport(
                         serverName, serverIp, description, timestamp
                 );
+                DatabaseManager.handleServerError(serverIp + " : " + serverName, "error_report", description);
                 logger.warn("Received error report from {}: {}", serverName, description);
 
             } else {
@@ -137,6 +138,7 @@ public class SNMPMonitoringServer {
 
         try {
             DatabaseManager.initialize();
+            DatabaseManager.addDefaultActionRule();
 
             SNMPMonitoringServer server = new SNMPMonitoringServer(port);
 
