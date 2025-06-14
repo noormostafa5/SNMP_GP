@@ -115,19 +115,21 @@ public class SNMPClientServer {
             double networkUsage = getNetworkUsage();
 
             boolean isAlarmed = false;
-            StringBuilder errorDescription = new StringBuilder();
 
-            if (cpuUsage > 60.0) {
-                errorDescription.append(String.format("CPU usage is high (%.2f%%). ", cpuUsage));
-                isAlarmed = true;
+            // Check CPU usage and send separate error report if alarmed
+            if (cpuUsage > 70.0) {
+                isAlarmed = true; // Set alarmed status for the main health report
+                sendSingleErrorReport(String.format("CPU usage is high (%.2f%%). ", cpuUsage));
             }
-            if (memoryUsage > 60.0) {
-                errorDescription.append(String.format("Memory usage is high (%.2f%%). ", memoryUsage));
-                isAlarmed = true;
+            // Check Memory usage and send separate error report if alarmed
+            if (memoryUsage > 70.0) {
+                isAlarmed = true; // Set alarmed status for the main health report
+                sendSingleErrorReport(String.format("Memory usage is high (%.2f%%). ", memoryUsage));
             }
-            if (diskUsage > 60.0) {
-                errorDescription.append(String.format("Disk usage is high (%.2f%%). ", diskUsage));
-                isAlarmed = true;
+            // Check Disk usage and send separate error report if alarmed
+            if (diskUsage > 70.0) {
+                isAlarmed = true; // Set alarmed status for the main health report
+                sendSingleErrorReport(String.format("Disk usage is high (%.2f%%). ", diskUsage));
             }
 
             // Send Health Report
@@ -156,23 +158,22 @@ public class SNMPClientServer {
                     isAlarmed
             );
 
-            // Send Error Report if alarmed
-            if (isAlarmed) {
-                ObjectNode errorReportNode = objectMapper.createObjectNode();
-                errorReportNode.put("reportType", "error_report");
-                errorReportNode.put("serverName", serverName);
-                errorReportNode.put("serverIp", serverIp);
-                errorReportNode.put("description", errorDescription.toString().trim());
-                errorReportNode.put("timestamp", System.currentTimeMillis());
-
-                String errorReportJson = objectMapper.writeValueAsString(errorReportNode);
-                sendReportPacket(errorReportJson);
-                logger.warn("Error report sent to monitoring server: {}", errorDescription.toString().trim());
-            }
-
         } catch (Exception e) {
             logger.error("Error sending health report: {}", e.getMessage());
         }
+    }
+
+    private void sendSingleErrorReport(String description) throws IOException {
+        ObjectNode errorReportNode = objectMapper.createObjectNode();
+        errorReportNode.put("reportType", "error_report");
+        errorReportNode.put("serverName", serverName);
+        errorReportNode.put("serverIp", serverIp);
+        errorReportNode.put("description", description);
+        errorReportNode.put("timestamp", System.currentTimeMillis());
+
+        String errorReportJson = objectMapper.writeValueAsString(errorReportNode);
+        sendReportPacket(errorReportJson);
+        logger.warn("Error report sent to monitoring server: {}", description);
     }
 
     private void sendReportPacket(String reportJson) throws IOException {
