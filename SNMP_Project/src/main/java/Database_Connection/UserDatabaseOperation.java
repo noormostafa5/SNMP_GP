@@ -33,6 +33,12 @@ public class UserDatabaseOperation {
             throw new IllegalArgumentException("Invalid National ID format. Must be 20 digits.");
         }
 
+        // Debug: Print password before hashing
+        System.out.println("=== DATABASE DEBUG ===");
+        System.out.println("Password before hashing: " + password);
+        System.out.println("Hashed password: " + hashPassword(password));
+        System.out.println("=====================");
+
         String sql = "INSERT INTO person (firstName, lastName, phoneNumber, nationalID, DOB, password) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DataBaseConnection.getConnection();
@@ -182,12 +188,22 @@ public class UserDatabaseOperation {
     }
 
     // LoginServlet operation
-    public static User loginUser(String firstName, String lastName, String password) throws SQLException {
+    public static User loginUser(String firstName, String lastName, String password) throws SQLException, NoSuchAlgorithmException {
         String sql = "SELECT * FROM person WHERE firstname = ? AND lastname = ? AND password = ?";
+
+        // Debug: Print login attempt details
+        System.out.println("=== LOGIN ATTEMPT DEBUG ===");
+        System.out.println("First Name: " + firstName);
+        System.out.println("Last Name: " + lastName);
+        System.out.println("Password (plain): " + password);
+        System.out.println("Password (hashed): " + hashPassword(password));
+        System.out.println("SQL Query: " + sql);
+        System.out.println("===========================");
 
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
+            // First try with plain text password
             pstmt.setString(1, firstName);
             pstmt.setString(2, lastName);
             pstmt.setString(3, password);
@@ -195,15 +211,97 @@ public class UserDatabaseOperation {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
+                // Found user with plain text password
                 User user = new User();
                 user.setfName(rs.getString("firstname"));
                 user.setlName(rs.getString("lastname"));
                 user.setPhoneNumber(rs.getInt("phonenumber"));
                 user.setNationalID(rs.getString("nationalid"));
                 user.setDOB(rs.getDate("dob"));
+                
+                // Debug: Print database values
+                System.out.println("=== DATABASE VALUES DEBUG ===");
+                System.out.println("DB firstname: " + rs.getString("firstname"));
+                System.out.println("DB lastname: " + rs.getString("lastname"));
+                System.out.println("DB phonenumber: " + rs.getInt("phonenumber"));
+                System.out.println("DB nationalid: " + rs.getString("nationalid"));
+                System.out.println("DB dob: " + rs.getDate("dob"));
+                System.out.println("DB password: " + rs.getString("password"));
+                System.out.println("Login successful with plain text password");
+                System.out.println("=============================");
+                
+                System.out.println("=== LOGIN SUCCESS ===");
+                System.out.println("User found: " + user.getfName() + " " + user.getlName());
+                System.out.println("====================");
                 return user;
             }
-            return null;
+
+            // If not found with plain text, try with hashed password
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, hashPassword(password));
+
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                // Found user with hashed password
+                User user = new User();
+                user.setfName(rs.getString("firstname"));
+                user.setlName(rs.getString("lastname"));
+                user.setPhoneNumber(rs.getInt("phonenumber"));
+                user.setNationalID(rs.getString("nationalid"));
+                user.setDOB(rs.getDate("dob"));
+                
+                // Debug: Print database values
+                System.out.println("=== DATABASE VALUES DEBUG ===");
+                System.out.println("DB firstname: " + rs.getString("firstname"));
+                System.out.println("DB lastname: " + rs.getString("lastname"));
+                System.out.println("DB phonenumber: " + rs.getInt("phonenumber"));
+                System.out.println("DB nationalid: " + rs.getString("nationalid"));
+                System.out.println("DB dob: " + rs.getDate("dob"));
+                System.out.println("DB password: " + rs.getString("password"));
+                System.out.println("Login successful with hashed password");
+                System.out.println("=============================");
+                
+                System.out.println("=== LOGIN SUCCESS ===");
+                System.out.println("User found: " + user.getfName() + " " + user.getlName());
+                System.out.println("====================");
+                return user;
+            } else {
+                System.out.println("=== LOGIN FAILED ===");
+                System.out.println("No user found with these credentials (tried both plain text and hashed)");
+                System.out.println("====================");
+                return null;
+            }
+        }
+    }
+
+    // Method to update all plain text passwords to hashed passwords
+    public static void updateAllPasswordsToHashed() throws SQLException, NoSuchAlgorithmException {
+        String sql = "UPDATE person SET password = ? WHERE password != ? AND password != ? AND password != ?";
+        
+        // Get the hashed versions of common passwords
+        String hashedPassword123 = hashPassword("password123");
+        String hashedPassword456 = hashPassword("password456");
+        String hashedPassword789 = hashPassword("password789");
+        
+        System.out.println("=== UPDATING PASSWORDS ===");
+        System.out.println("Hashed password123: " + hashedPassword123);
+        System.out.println("Hashed password456: " + hashedPassword456);
+        System.out.println("Hashed password789: " + hashedPassword789);
+        
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            // Update all plain text "password123" to hashed version
+            pstmt.setString(1, hashedPassword123);
+            pstmt.setString(2, hashedPassword123); // Don't update already hashed passwords
+            pstmt.setString(3, hashedPassword456);
+            pstmt.setString(4, hashedPassword789);
+            
+            int updatedRows = pstmt.executeUpdate();
+            System.out.println("Updated " + updatedRows + " passwords to hashed version");
+            System.out.println("=========================");
         }
     }
 }

@@ -6,10 +6,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SNMP Action Rules</title>
-  <link rel="stylesheet" type="text/css" href="../Styles/index.css">
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/FrontEnd/Styles/index.css">
   <style>
     body {
-      background-image: url('../background/bckg1.jpg');
+      background-image: url('${pageContext.request.contextPath}/FrontEnd/background/bckg1.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -23,13 +23,13 @@
   <main id="dashboard">
     <div class="header">
       <h1 class="title">SNMP Monitoring Dashboard</h1>
-      <a href="../Pages/welcome.jsp" class="button">Logout</a>
+      <a href="${pageContext.request.contextPath}/logout" class="button">Logout</a>
     </div>
 
     <div class="tabs">
-      <a href="dashboard.jsp" class="tab-button">Nodes</a>
-      <a href="alarms.jsp" class="tab-button">Alarms</a>
-      <a href="rules.jsp" class="tab-button active">Action Rules</a>
+      <a href="${pageContext.request.contextPath}/dashboard" class="tab-button">Nodes</a>
+      <a href="${pageContext.request.contextPath}/alarms" class="tab-button">Errors</a>
+      <a href="${pageContext.request.contextPath}/rules" class="tab-button active">Action Rules</a>
     </div>
 
     <div class="tab-content active">

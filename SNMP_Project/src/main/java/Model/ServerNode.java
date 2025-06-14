@@ -9,75 +9,57 @@ package Model;
 		|-> Server name (Node)
 		|-> date
 		|-> Action -> from class Action
-		|-> Alarm.status
+		|-> Error.status
 */
 
 import java.util.Date;
 
 public class ServerNode {
-
-    private double cpu_Usage;
-    private String ipAddress;
-    private int port;
-    private Date report;
-    private double disk_Usage;
-    private String usage;
+    private int id;
+    private String serverName;
+    private String serverIp;
+    private Date reportTime;
+    private double cpuUsage;
+    private double memoryUsage;
+    private double diskUsage;
+    private double networkUsage;
+    private String status;
 
     public ServerNode() {
-      this.ipAddress="0.0.0.0";
-      this.port=0;
-      this.cpu_Usage=0.0;
-      this.report= new Date();
-      this.usage="no usage";
-    }
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+        this.serverName = "";
+        this.serverIp = "";
+        this.reportTime = new Date();
+        this.cpuUsage = 0.0;
+        this.memoryUsage = 0.0;
+        this.diskUsage = 0.0;
+        this.networkUsage = 0.0;
+        this.status = "";
     }
 
-    public int getPort() {
-        return port;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
+    public String getServerName() { return serverName; }
+    public void setServerName(String serverName) { this.serverName = serverName; }
 
-    public Date getReport() {
-        return report;
-    }
+    public String getServerIp() { return serverIp; }
+    public void setServerIp(String serverIp) { this.serverIp = serverIp; }
 
-    public void setReport(Date report) {
-        this.report = report;
-    }
+    public Date getReportTime() { return reportTime; }
+    public void setReportTime(Date reportTime) { this.reportTime = reportTime; }
 
-    public double getDisk_Usage() {
-        return disk_Usage;
-    }
+    public double getCpuUsage() { return cpuUsage; }
+    public void setCpuUsage(double cpuUsage) { this.cpuUsage = cpuUsage; }
 
-    public void setDisk_Usage(double disk_Usage) {
-        this.disk_Usage = disk_Usage;
-    }
+    public double getMemoryUsage() { return memoryUsage; }
+    public void setMemoryUsage(double memoryUsage) { this.memoryUsage = memoryUsage; }
 
-    public String getUsage() {
-        return usage;
-    }
+    public double getDiskUsage() { return diskUsage; }
+    public void setDiskUsage(double diskUsage) { this.diskUsage = diskUsage; }
 
-    public void setUsage(String usage) {
-        this.usage = usage;
-    }
+    public double getNetworkUsage() { return networkUsage; }
+    public void setNetworkUsage(double networkUsage) { this.networkUsage = networkUsage; }
 
-    public double getCpu_Usage() {
-        return cpu_Usage;
-    }
-
-    public void setCpu_Usage(double cpu_Usage) {
-        this.cpu_Usage = cpu_Usage;
-    }
-
-
-
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

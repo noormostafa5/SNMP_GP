@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SNMP Platform - Welcome</title>
-    <link rel="stylesheet" type="text/css" href="../Styles/welcome.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/FrontEnd/Styles/welcome.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
@@ -28,8 +28,8 @@
                 <span>SNMP Platform</span>
             </div>
             <div class="nav-buttons">
-                <a href="login.jsp" class="nav-button">Login</a>
-                <a href="signUp.jsp" class="nav-button primary">Sign Up</a>
+                <a href="${pageContext.request.contextPath}/login" class="nav-button">Login</a>
+                <a href="${pageContext.request.contextPath}/register" class="nav-button primary">Sign Up</a>
             </div>
         </nav>
 
@@ -38,7 +38,7 @@
                 <h1 class="hero-title">Network Monitoring Made Simple</h1>
                 <p class="hero-subtitle">Monitor, manage, and optimize your network infrastructure with our powerful SNMP platform</p>
                 <div class="hero-buttons">
-                    <a href="signUp.jsp" class="hero-button primary">Get Started</a>
+                    <a href="${pageContext.request.contextPath}/register" class="hero-button primary">Get Started</a>
                     <a href="#features" class="hero-button secondary">Learn More</a>
                 </div>
             </div>
@@ -89,7 +89,7 @@
             <div class="cta-content">
                 <h2>Ready to Get Started?</h2>
                 <p>Join thousands of network administrators who trust our platform</p>
-                <a href="signUp.jsp" class="cta-button">Start Free Trial</a>
+                <a href="${pageContext.request.contextPath}/register" class="cta-button">Start Free Trial</a>
             </div>
         </div>
 
@@ -101,8 +101,8 @@
                 </div>
                 <div class="footer-section">
                     <h4>Quick Links</h4>
-                    <a href="login.jsp">Login</a>
-                    <a href="signUp.jsp">Sign Up</a>
+                    <a href="${pageContext.request.contextPath}/login">Login</a>
+                    <a href="${pageContext.request.contextPath}/register">Sign Up</a>
                     <a href="#features">Features</a>
                 </div>
                 <div class="footer-section">

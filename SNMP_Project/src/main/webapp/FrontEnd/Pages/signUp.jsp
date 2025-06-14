@@ -6,11 +6,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SNMP Sign Up</title>
-    <link rel="stylesheet" type="text/css" href="../Styles/signUp.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/FrontEnd/Styles/signUp.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            background-image: url('../background/bckg1.jpg');
+            background-image: url("${pageContext.request.contextPath}/FrontEnd/background/bckg1.jpg");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -31,39 +31,53 @@
                 <p class="subtitle">Join our network monitoring platform</p>
             </div>
 
-            <form class="signup-form" action="dashboard.jsp" method="post">
+            <form class="signup-form" action="${pageContext.request.contextPath}/register" method="post">
                 <div class="form-group">
                     <div class="input-icon">
                         <i class="fas fa-user"></i>
-                        <input type="text" id="firstName" class="input" placeholder="First Name" autocomplete="off" />
+                        <input type="text" name="firstName" id="firstName" class="input" placeholder="First Name" autocomplete="off" required />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-icon">
                         <i class="fas fa-user"></i>
-                        <input type="text" id="lastName" class="input" placeholder="Last Name" autocomplete="off" />
+                        <input type="text" name="lastName" id="lastName" class="input" placeholder="Last Name" autocomplete="off" required />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-icon">
-                        <i class="fas fa-at"></i>
-                        <input type="text" id="username" class="input" placeholder="Username" autocomplete="off" />
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" name="nationalID" id="nationalID" class="input" placeholder="National ID (20 digits)" autocomplete="off" required maxlength="20" pattern="[0-9]{20}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" name="phoneNumber" id="phoneNumber" class="input" placeholder="Phone Number (optional)" autocomplete="off" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" name="dob" id="dob" class="input" placeholder="Date of Birth (optional)" autocomplete="off" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-icon">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" id="email" class="input" placeholder="Email Address" autocomplete="off" />
+                        <input type="email" name="email" id="email" class="input" placeholder="Email Address (optional)" autocomplete="off" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-icon">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="password" class="input" placeholder="Password" autocomplete="off" />
+                        <input type="password" name="password" id="password" class="input" placeholder="Password (min 6 characters)" autocomplete="off" required minlength="6" />
                         <i class="fas fa-eye toggle-password"></i>
                     </div>
                 </div>
@@ -71,13 +85,13 @@
                 <div class="form-group">
                     <div class="input-icon">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="confirmPassword" class="input" placeholder="Confirm Password" autocomplete="off" />
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="input" placeholder="Confirm Password" autocomplete="off" required minlength="6" />
                         <i class="fas fa-eye toggle-password"></i>
                     </div>
                 </div>
 
                 <div class="terms-group">
-                    <input type="checkbox" id="terms" class="checkbox" />
+                    <input type="checkbox" id="terms" class="checkbox" required />
                     <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
                 </div>
 
@@ -86,7 +100,11 @@
                     <i class="fas fa-arrow-right"></i>
                 </button>
 
-                <p id="signup-error" class="error-text"></p>
+                <% if (request.getAttribute("error") != null) { %>
+                    <p id="signup-error" class="error-text"><%= request.getAttribute("error") %></p>
+                <% } else { %>
+                    <p id="signup-error" class="error-text"></p>
+                <% } %>
             </form>
 
             <div class="social-signup">
@@ -104,7 +122,7 @@
             </div>
 
             <p class="login-link">
-                Already have an account? <a href="login.jsp">Login here</a>
+                Already have an account? <a href="${pageContext.request.contextPath}/login">Login here</a>
             </p>
         </div>
 

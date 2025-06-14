@@ -292,7 +292,7 @@ th {
     align-items: center;
 }
 
-/* Make the Add Alarm button not take full width */
+/* Make the Add Error button not take full width */
 .add-alarm-btn {
     width: auto;
     min-width: 120px;

@@ -31,11 +31,18 @@ public class LoginServlet extends HttpServlet {
         String lastName = request.getParameter("lastName");
         String password = request.getParameter("password");
 
+        // Debug: Print received parameters
+        System.out.println("=== LOGIN DEBUG ===");
+        System.out.println("First Name: " + firstName);
+        System.out.println("Last Name: " + lastName);
+        System.out.println("Password: " + password);
+        System.out.println("==================");
+
         // Validate input parameters
         if (firstName == null || lastName == null || password == null ||
                 firstName.trim().isEmpty() || lastName.trim().isEmpty() || password.trim().isEmpty()) {
             request.setAttribute("error", "First name, last name, and password are required");
-            request.getRequestDispatcher("/FrontEnd/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/FrontEnd/Pages/login.jsp").forward(request, response);
             return;
         }
 
@@ -68,25 +75,23 @@ public class LoginServlet extends HttpServlet {
                 response.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
 
                 // Redirect to dashboard
-                response.sendRedirect(request.getContextPath() + "/FrontEnd/dashboard.jsp");
+                response.sendRedirect(request.getContextPath() + "/dashboard");
             } else {
                 // Add delay to prevent brute force attacks
                 Thread.sleep(1000);
 
                 request.setAttribute("error", "login error check credentials");
-                request.setAttribute("firstName", firstName);
-                request.setAttribute("lastName", lastName);
-                request.getRequestDispatcher("/FrontEnd/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/FrontEnd/Pages/login.jsp").forward(request, response);
             }
 
         } catch (SQLException e) {
             request.setAttribute("error", "Database error occurred");
             e.printStackTrace(); // Log the error
-            request.getRequestDispatcher("/FrontEnd/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/FrontEnd/Pages/login.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("error", "An unexpected error occurred");
             e.printStackTrace(); // Log the error
-            request.getRequestDispatcher("/FrontEnd/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/FrontEnd/Pages/login.jsp").forward(request, response);
         }
     }
 
@@ -99,10 +104,10 @@ public class LoginServlet extends HttpServlet {
         if (session != null && session.getAttribute("user") != null) {
             // User is already logged in, redirect to dashboard
             System.out.println("Success");
-            response.sendRedirect(request.getContextPath() + "/FrontEnd/dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {
             // No active session, show login page
-            request.getRequestDispatcher("/FrontEnd/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/FrontEnd/Pages/login.jsp").forward(request, response);
         }
     }
 
