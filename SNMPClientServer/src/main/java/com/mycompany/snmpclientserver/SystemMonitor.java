@@ -1,5 +1,8 @@
 package com.mycompany.snmpclientserver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
@@ -7,9 +10,6 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.FileSystem;
 import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SystemMonitor {
     private final SystemInfo systemInfo;
@@ -100,12 +100,12 @@ public class SystemMonitor {
         double cpuUsage = getCpuUsage();
         double memoryUsage = getMemoryUsage();
 
-        if (cpuUsage > 90.0 || memoryUsage > 90.0) {
+        if (cpuUsage > 70.0 || memoryUsage > 70.0) {
             return false;
         }
 
         for (DiskStatus disk : getDiskStatuses()) {
-            if (disk.getUsagePercent() > 90.0) {
+            if (disk.getUsagePercent() > 70.0) {
                 return false;
             }
         }
