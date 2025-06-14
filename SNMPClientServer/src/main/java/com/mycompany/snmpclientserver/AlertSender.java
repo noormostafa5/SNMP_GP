@@ -1,15 +1,23 @@
 package com.mycompany.snmpclientserver;
 
-import org.snmp4j.*;
-import org.snmp4j.mp.SnmpConstants;
-import org.snmp4j.smi.*;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.snmp4j.CommunityTarget;
+import org.snmp4j.PDU;
+import org.snmp4j.Snmp;
+import org.snmp4j.TransportMapping;
+import org.snmp4j.mp.SnmpConstants;
+import org.snmp4j.smi.Address;
+import org.snmp4j.smi.Integer32;
+import org.snmp4j.smi.OID;
+import org.snmp4j.smi.OctetString;
+import org.snmp4j.smi.UdpAddress;
+import org.snmp4j.smi.VariableBinding;
+import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 public class AlertSender {
     private static final Logger logger = LoggerFactory.getLogger(AlertSender.class);
@@ -41,7 +49,7 @@ public class AlertSender {
         pdu.add(new VariableBinding(new OID("1.3.6.1.4.1.9999.1.3"), new OctetString(serverIP)));
         pdu.add(new VariableBinding(new OID("1.3.6.1.4.1.9999.1.4"), new Integer32(serverPort)));
 
-        String alarmStatus = (cpuUsage > 90.0 || memoryUsage > 90.0) ? "ALARMED" : "CLEAR";
+        String alarmStatus = (cpuUsage > 70.0 || memoryUsage > 70.0) ? "ALARMED" : "CLEAR";
         pdu.add(new VariableBinding(new OID("1.3.6.1.4.1.9999.1.5"), new OctetString(alarmStatus)));
 
         pdu.add(new VariableBinding(new OID("1.3.6.1.4.1.9999.1.6"), new OctetString(String.format("%.2f", cpuUsage))));
