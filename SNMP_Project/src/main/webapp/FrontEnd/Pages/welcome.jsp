@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            background-image: url('../background/bckg1.jpg');
+            background-image: url('${pageContext.request.contextPath}/FrontEnd/background/bckg1.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <div class="signup-prompt">
+        <div class="signup-prompt" style="margin-top: -2px;">
             <p>Don't have an account? <a href="${pageContext.request.contextPath}/register">Create Account</a></p>
         </div>
     </div>

@@ -24,7 +24,7 @@
     <div class="signup-container">
         <div class="signup-content">
             <div class="signup-header">
-                <a href="../Pages/welcome.jsp" class="back-button">
+                <a href="${pageContext.request.contextPath}/" class="back-button">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <h1>Create Account</h1>

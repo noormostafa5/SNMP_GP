@@ -32,7 +32,7 @@
   <main id="dashboard">
     <div class="header">
       <h1 class="title">SNMP Monitoring Dashboard</h1>
-      <a href="${pageContext.request.contextPath}/logout" class="button">Logout</a>
+      <a href="${pageContext.request.contextPath}/" class="button">Logout</a>
     </div>
 
     <div class="tabs">
