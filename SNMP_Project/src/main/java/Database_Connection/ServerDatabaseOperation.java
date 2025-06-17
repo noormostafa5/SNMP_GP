@@ -1,61 +1,57 @@
 package Database_Connection;
 
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import Model.ServerNode;
-
-
 
 public class ServerDatabaseOperation {
 
     private static final String INSERT_SQL =
-            "INSERT INTO server_reports (server_name, server_ip, report_time, cpu_usage, memory_usage, disk_usage, network_usage, status) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            "INSERT INTO nodes (node_name, node_ip, node_port) VALUES (?, ?::inet, ?)";
 
-    private static final String SELECT_BY_IP_PORT_SQL =
-            "SELECT * FROM server_reports WHERE server_ip = ?";
+    private static final String SELECT_BY_IP_SQL =
+            "SELECT * FROM nodes WHERE node_ip = ?";
 
     private static final String SELECT_ALL_SQL =
-            "SELECT * FROM server_reports";
+            "SELECT * FROM nodes";
 
     private static final String UPDATE_SQL =
-            "UPDATE server_reports SET server_name = ?, server_ip = ?, report_time = ?, cpu_usage = ?, memory_usage = ?, disk_usage = ?, network_usage = ?, status = ? " +
-            "WHERE id = ?";
+            "UPDATE nodes SET node_name = ?, node_ip = ?::inet, node_port = ? WHERE node_id = ?";
 
     private static final String DELETE_SQL =
-            "DELETE FROM server_reports WHERE server_ip = ?";
+            "DELETE FROM nodes WHERE node_ip = ?::inet";
 
-    private static final String SEARCH_BY_USAGE_SQL=
-            "SELECT * FROM server_reports WHERE server_name ILIKE ? OR server_ip ILIKE ?";
-
+    private static final String SEARCH_BY_NAME_OR_IP_SQL =
+            "SELECT * FROM nodes WHERE node_name ILIKE ? OR node_ip::TEXT ILIKE ?";
 
     public static boolean createServerNode(ServerNode serverNode) throws SQLException {
         System.out.println("=== ServerDatabaseOperation.createServerNode() called ===");
-        System.out.println("ServerNode details: " + serverNode.getServerName() + ", " + serverNode.getServerIp() + ", " + serverNode.getStatus());
-        
-        try (Connection conn = DataBaseConnection.getConnection();
+        System.out.println("ServerNode details: " + serverNode.getServerName() + ", " + serverNode.getServerIp() + ", " + serverNode.getPort());
+
+        try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(INSERT_SQL)) {
 
-            setServerNodeParameters(pstmt, serverNode);
-            
+            pstmt.setString(1, serverNode.getServerName());
+            pstmt.setString(2, serverNode.getServerIp());
+            pstmt.setInt(3, serverNode.getPort());
+
             System.out.println("Executing INSERT SQL: " + INSERT_SQL);
             int result = pstmt.executeUpdate();
             System.out.println("INSERT result: " + result + " rows affected");
-            
+
             return result > 0;
+        } catch (SQLException e) {
+            System.out.println("SQL Exception in createServerNode: " + e.getMessage());
+            System.out.println("SQL State: " + e.getSQLState());
+            System.out.println("Error Code: " + e.getErrorCode());
+            throw e;
         }
     }
+
     public static ServerNode getServerNode(String ipAddress) throws SQLException {
-        try (Connection conn = DataBaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(SELECT_BY_IP_PORT_SQL)) {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SELECT_BY_IP_SQL)) {
 
             pstmt.setString(1, ipAddress);
 
@@ -67,10 +63,11 @@ public class ServerDatabaseOperation {
         }
         return null;
     }
+
     public static List<ServerNode> getAllServerNodes() throws SQLException {
         List<ServerNode> nodes = new ArrayList<>();
 
-        try (Connection conn = DataBaseConnection.getConnection();
+        try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(SELECT_ALL_SQL)) {
 
@@ -80,31 +77,37 @@ public class ServerDatabaseOperation {
         }
         return nodes;
     }
+
     public static boolean updateServerNode(ServerNode serverNode) throws SQLException {
-        String sql = "UPDATE server_reports SET server_name = ?, server_ip = ?, report_time = ?, cpu_usage = ?, memory_usage = ?, disk_usage = ?, network_usage = ?, status = ? WHERE id = ?";
-        try (Connection conn = DataBaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(UPDATE_SQL)) {
+
             pstmt.setString(1, serverNode.getServerName());
             pstmt.setString(2, serverNode.getServerIp());
-            pstmt.setTimestamp(3, new Timestamp(serverNode.getReportTime().getTime()));
-            pstmt.setDouble(4, serverNode.getCpuUsage());
-            pstmt.setDouble(5, serverNode.getMemoryUsage());
-            pstmt.setDouble(6, serverNode.getDiskUsage());
-            pstmt.setDouble(7, serverNode.getNetworkUsage());
-            pstmt.setString(8, serverNode.getStatus());
-            pstmt.setInt(9, serverNode.getId());
+            pstmt.setInt(3, serverNode.getPort());
+            pstmt.setInt(4, serverNode.getId());
+
             return pstmt.executeUpdate() > 0;
         }
     }
 
-    public static List<ServerNode> searchByUsage(String usagePattern) throws SQLException {
+    public static boolean deleteServerNode(String ipAddress) throws SQLException {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(DELETE_SQL)) {
+
+            pstmt.setString(1, ipAddress);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public static List<ServerNode> searchByNameOrIp(String pattern) throws SQLException {
         List<ServerNode> nodes = new ArrayList<>();
 
-        try (Connection conn = DataBaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(SEARCH_BY_USAGE_SQL)) {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SEARCH_BY_NAME_OR_IP_SQL)) {
 
-            pstmt.setString(1, "%" + usagePattern + "%");
-            pstmt.setString(2, "%" + usagePattern + "%");
+            pstmt.setString(1, "%" + pattern + "%");
+            pstmt.setString(2, "%" + pattern + "%");
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -115,52 +118,39 @@ public class ServerDatabaseOperation {
         return nodes;
     }
 
-    public static boolean deleteServerNode(String ipAddress) throws SQLException{
-        try (Connection conn = DataBaseConnection.getConnection();
-        PreparedStatement pstmt = conn.prepareStatement(DELETE_SQL)) {
-            pstmt.setString(1, ipAddress);
-            return pstmt.executeUpdate() > 0;
-        }
-    }
-
-
-    private static void setServerNodeParameters(PreparedStatement pstmt, ServerNode serverNode)
-            throws SQLException {
-        System.out.println("Setting parameters for PreparedStatement:");
-        System.out.println("  serverName: " + serverNode.getServerName());
-        System.out.println("  serverIp: " + serverNode.getServerIp());
-        System.out.println("  reportTime: " + serverNode.getReportTime());
-        System.out.println("  cpuUsage: " + serverNode.getCpuUsage());
-        System.out.println("  memoryUsage: " + serverNode.getMemoryUsage());
-        System.out.println("  diskUsage: " + serverNode.getDiskUsage());
-        System.out.println("  networkUsage: " + serverNode.getNetworkUsage());
-        System.out.println("  status: " + serverNode.getStatus());
-        
-        pstmt.setString(1, serverNode.getServerName());
-        pstmt.setString(2, serverNode.getServerIp());
-        pstmt.setTimestamp(3, new Timestamp(serverNode.getReportTime().getTime()));
-        pstmt.setDouble(4, serverNode.getCpuUsage());
-        pstmt.setDouble(5, serverNode.getMemoryUsage());
-        pstmt.setDouble(6, serverNode.getDiskUsage());
-        pstmt.setDouble(7, serverNode.getNetworkUsage());
-        pstmt.setString(8, serverNode.getStatus());
-        
-        System.out.println("All parameters set successfully");
-    }
-
-
     private static ServerNode mapResultSetToServerNode(ResultSet rs) throws SQLException {
+        System.out.println("=== Mapping ResultSet to ServerNode ===");
         ServerNode node = new ServerNode();
-        node.setId(rs.getInt("id"));
-        node.setServerName(rs.getString("server_name"));
-        node.setServerIp(rs.getString("server_ip"));
-        node.setReportTime(rs.getTimestamp("report_time"));
-        node.setCpuUsage(rs.getDouble("cpu_usage"));
-        node.setMemoryUsage(rs.getDouble("memory_usage"));
-        node.setDiskUsage(rs.getDouble("disk_usage"));
-        node.setNetworkUsage(rs.getDouble("network_usage"));
-        node.setStatus(rs.getString("status"));
+
+        try {
+            node.setId(rs.getInt("node_id"));
+            System.out.println("Mapped node_id: " + node.getId());
+
+            node.setServerName(rs.getString("node_name"));
+            System.out.println("Mapped node_name: " + node.getServerName());
+
+            node.setServerIp(rs.getString("node_ip"));
+            System.out.println("Mapped node_ip: " + node.getServerIp());
+
+            node.setPort(rs.getInt("node_port"));
+            System.out.println("Mapped node_port: " + node.getPort());
+
+            System.out.println("=== Mapping complete ===");
+        } catch (SQLException e) {
+            System.out.println("Error mapping ResultSet to ServerNode: " + e.getMessage());
+            System.out.println("SQL State: " + e.getSQLState());
+            System.out.println("Error Code: " + e.getErrorCode());
+            throw e;
+        }
+
         return node;
     }
-}
 
+    private static Connection getConnection() throws SQLException {
+        // Replace with your actual connection logic
+        String url = "jdbc:postgresql://my-snmp-public.ca5cwqo86nt5.us-east-1.rds.amazonaws.com:5432/snmp";
+        String user = "postgres";
+        String password = "Mayar123m";
+        return DriverManager.getConnection(url, user, password);
+    }
+}

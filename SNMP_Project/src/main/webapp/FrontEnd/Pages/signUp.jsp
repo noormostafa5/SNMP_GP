@@ -18,6 +18,33 @@
             margin: 0;
             padding: 0;
         }
+
+        /* Toast Message Styles */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff4d4f;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            display: block;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -148,6 +175,9 @@
         </div>
     </div>
 
+    <!-- Toast Message Container -->
+    <div id="toast" class="toast"></div>
+
     <script>
         // Toggle password visibility
         document.querySelectorAll('.toggle-password').forEach(toggle => {
@@ -158,6 +188,36 @@
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
             });
+        });
+
+        // Password validation
+        function validatePasswords() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match!');
+                return false;
+            }
+            return true;
+        }
+
+        // Show toast message
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Add validation to form submission
+        document.querySelector('form').addEventListener('submit', function(event) {
+            if (!validatePasswords()) {
+                event.preventDefault();
+            }
         });
     </script>
 </body>

@@ -1,6 +1,10 @@
 package Backend_Servlet;
 
 import java.io.IOException;
+import java.util.List;
+
+import Database_Connection.ActionDatabaseOperation;
+import Model.Action;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,10 +22,20 @@ public class RulesServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
+
+        try {
+            List<Action> rules = ActionDatabaseOperation.getAllActionRulesWithNodeNames(); // ✅ DB call
+            request.setAttribute("actionRules", rules); // ✅ Pass to JSP
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Could not load rules from database.");
+        }
+
         request.getRequestDispatcher("/FrontEnd/Pages/rules.jsp").forward(request, response);
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
-} 
+}

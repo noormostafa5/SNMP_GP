@@ -1,65 +1,45 @@
 package Model;
 
-/*
-
-|->  Node
-		|-> CPU
-		|-> Memory
-		|-> IP address (Server address) IP:port
-		|-> Server name (Node)
-		|-> date
-		|-> Action -> from class Action
-		|-> Error.status
-*/
-
-import java.util.Date;
-
 public class ServerNode {
     private int id;
-    private String serverName;
-    private String serverIp;
-    private Date reportTime;
-    private double cpuUsage;
-    private double memoryUsage;
-    private double diskUsage;
-    private double networkUsage;
-    private String status;
+    private String nodeName;
+    private String nodeIp;
+    private int nodePort;
 
-    public ServerNode() {
-        this.serverName = "";
-        this.serverIp = "";
-        this.reportTime = new Date();
-        this.cpuUsage = 0.0;
-        this.memoryUsage = 0.0;
-        this.diskUsage = 0.0;
-        this.networkUsage = 0.0;
-        this.status = "";
+    public int getId() {
+        return id;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getServerName() { return serverName; }
-    public void setServerName(String serverName) { this.serverName = serverName; }
+    public String getServerName() {
+        return nodeName;
+    }
 
-    public String getServerIp() { return serverIp; }
-    public void setServerIp(String serverIp) { this.serverIp = serverIp; }
+    public void setServerName(String nodeName) {
+        this.nodeName = nodeName;
+    }
 
-    public Date getReportTime() { return reportTime; }
-    public void setReportTime(Date reportTime) { this.reportTime = reportTime; }
+    public String getServerIp() {
+        return nodeIp;
+    }
 
-    public double getCpuUsage() { return cpuUsage; }
-    public void setCpuUsage(double cpuUsage) { this.cpuUsage = cpuUsage; }
+    public void setServerIp(String nodeIp) {
+        this.nodeIp = nodeIp;
+    }
 
-    public double getMemoryUsage() { return memoryUsage; }
-    public void setMemoryUsage(double memoryUsage) { this.memoryUsage = memoryUsage; }
+    public int getPort() {
+        return nodePort;
+    }
 
-    public double getDiskUsage() { return diskUsage; }
-    public void setDiskUsage(double diskUsage) { this.diskUsage = diskUsage; }
+    public void setPort(int nodePort) {
+        this.nodePort = nodePort;
+    }
 
-    public double getNetworkUsage() { return networkUsage; }
-    public void setNetworkUsage(double networkUsage) { this.networkUsage = networkUsage; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    // For backward compatibility with JSP
+    public int getServerPort() {
+        return nodePort;
+    }
 }
