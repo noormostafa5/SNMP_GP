@@ -148,9 +148,9 @@ public class ServerDatabaseOperation {
 
     private static Connection getConnection() throws SQLException {
         // Replace with your actual connection logic
-        String url = "jdbc:postgresql://my-snmp-public.ca5cwqo86nt5.us-east-1.rds.amazonaws.com:5432/snmp";
+        String url = "jdbc:postgresql://host_name";
         String user = "postgres";
-        String password = "Mayar123m";
+        String password = "null";
         return DriverManager.getConnection(url, user, password);
     }
 }
