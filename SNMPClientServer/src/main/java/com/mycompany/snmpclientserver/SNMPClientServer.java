@@ -2,9 +2,6 @@ package com.mycompany.snmpclientserver;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -12,8 +9,20 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+// SNMP4J Imports
+import org.snmp4j.CommunityTarget;
+import org.snmp4j.PDU;
+import org.snmp4j.Snmp;
+import org.snmp4j.TransportMapping;
+import org.snmp4j.event.ResponseEvent;
+import org.snmp4j.event.ResponseListener;
+import org.snmp4j.mp.SnmpConstants;
+import org.snmp4j.smi.OID;
+import org.snmp4j.smi.OctetString;
+import org.snmp4j.smi.UdpAddress;
+import org.snmp4j.smi.VariableBinding;
+import org.snmp4j.transport.DefaultUdpTransportMapping;
+
 import com.sun.management.OperatingSystemMXBean;
 
 import oshi.SystemInfo;
@@ -21,89 +30,76 @@ import oshi.software.os.OSFileStore;
 
 public class SNMPClientServer {
     private static final Logger logger = LoggerFactory.getLogger(SNMPClientServer.class);
-    private static final int DEFAULT_PORT = 162;
-    private static final int DEFAULT_MONITORING_PORT = 161;
-    private static final int BUFFER_SIZE = 1024;
+    private static final int DEFAULT_PORT = 162; // This might become the trap listening port or general SNMP agent port
     private static final int REPORT_INTERVAL = 60; // seconds (every minute)
+    public static final int DEFAULT_TRAP_PORT = 162; // Default SNMP trap port
 
     private final String serverName;
     private final String serverIp;
-    private final int port;
+    private final int port; // This might be used for general SNMP agent requests, not UDP socket
     private final String monitoringIp;
-    private final int monitoringPort;
-    private final ObjectMapper objectMapper;
+    private final int monitoringPort; // This is the target port for sending traps
+
     private final OperatingSystemMXBean osBean;
     private final SystemInfo systemInfo;
-    private DatagramSocket socket;
+    
     private ScheduledExecutorService scheduler;
+    
+    // SNMP4J fields
+    private Snmp snmp;
+    private CommunityTarget target; // Target for sending traps
 
-    public SNMPClientServer(String serverName, String serverIp, int port, String monitoringIp, int monitoringPort) {
+    // OIDs for the health report and error report (Custom OIDs under .1.3.6.1.4.1.999)
+    public static final OID OID_HEALTH_REPORT = new OID(".1.3.6.1.4.1.999.1.1"); // Custom OID for health report
+    public static final OID OID_ERROR_REPORT = new OID(".1.3.6.1.4.1.999.1.2"); // Custom OID for error report
+    public static final OID OID_CPU_USAGE = new OID(".1.3.6.1.4.1.999.2.1");
+    public static final OID OID_MEMORY_USAGE = new OID(".1.3.6.1.4.1.999.2.2");
+    public static final OID OID_DISK_USAGE = new OID(".1.3.6.1.4.1.999.2.3");
+    public static final OID OID_NETWORK_USAGE = new OID(".1.3.6.1.4.1.999.2.4");
+    public static final OID OID_IS_ALARMED = new OID(".1.3.6.1.4.1.999.2.5");
+    public static final OID OID_ERROR_DESCRIPTION = new OID(".1.3.6.1.4.1.999.2.6");
+
+    public SNMPClientServer(String serverName, String serverIp, int port, String monitoringIp, int monitoringPort, int trapPort) {
         this.serverName = serverName;
         this.serverIp = serverIp;
-        this.port = port;
+        this.port = port; // This port can be repurposed for SNMP agent if needed later
         this.monitoringIp = monitoringIp;
-        this.monitoringPort = monitoringPort;
-        this.objectMapper = new ObjectMapper();
+        this.monitoringPort = monitoringPort; // This is the port where the monitoring server listens for traps
+        
         this.osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         this.systemInfo = new SystemInfo();
+        
+        // Initialize SNMP for sending traps
+        try {
+            TransportMapping transport = new DefaultUdpTransportMapping();
+            snmp = new Snmp(transport);
+            transport.listen(); // Start listening for responses if needed, though for traps it's not strictly necessary.
+                                // It will be needed for agent functionality later.
+        } catch (IOException e) {
+            logger.error("Error initializing SNMP sender: {}", e.getMessage());
+        }
+
+        // Configure the target for sending traps
+        target = new CommunityTarget();
+        target.setCommunity(new OctetString("public")); // Use a default community string
+        target.setAddress(new UdpAddress(monitoringIp + "/" + monitoringPort));
+        target.setRetries(2);
+        target.setTimeout(1500);
+        target.setVersion(SnmpConstants.version2c); // Use SNMPv2c for traps
     }
 
     public void start() {
         try {
-            socket = new DatagramSocket(port);
-            logger.info("SNMP Client Server started on port {}", port);
-
-            // Start sending health reports
+            logger.info("SNMP Client Server started. Sending health reports to {}:{}.", monitoringIp, monitoringPort);
+            
+            // Start sending health reports as SNMP Traps
             scheduler = Executors.newSingleThreadScheduledExecutor();
             scheduler.scheduleAtFixedRate(this::sendHealthReport, 0, REPORT_INTERVAL, TimeUnit.SECONDS);
+            
+            // In the next phase, we will add SNMP agent functionality here to listen for requests
 
-            // Start listening for SNMP requests
-            new Thread(this::listenForRequests).start();
-
-        } catch (IOException e) {
-            logger.error("Error starting server: {}", e.getMessage());
-        }
-    }
-
-    private void listenForRequests() {
-        byte[] buffer = new byte[BUFFER_SIZE];
-        while (!socket.isClosed()) {
-            try {
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                socket.receive(packet);
-
-                String request = new String(packet.getData(), 0, packet.getLength());
-                logger.info("Received request: {}", request);
-
-                // Process the request and send response
-                String response = processRequest(request);
-                byte[] responseData = response.getBytes();
-
-                DatagramPacket responsePacket = new DatagramPacket(
-                        responseData,
-                        responseData.length,
-                        packet.getAddress(),
-                        packet.getPort()
-                );
-
-                socket.send(responsePacket);
-
-            } catch (IOException e) {
-                if (!socket.isClosed()) {
-                    logger.error("Error processing request: {}", e.getMessage());
-                }
-            }
-        }
-    }
-
-    private String processRequest(String request) {
-        try {
-            // Here you would implement actual SNMP request processing
-            // For now, we'll just return a simple response
-            return "Response to: " + request;
         } catch (Exception e) {
-            logger.error("Error processing request: {}", e.getMessage());
-            return "Error processing request";
+            logger.error("Error starting server: {}", e.getMessage());
         }
     }
 
@@ -132,59 +128,69 @@ public class SNMPClientServer {
                 sendSingleErrorReport(String.format("Disk usage is high (%.2f%%). ", diskUsage));
             }
 
-            // Send Health Report
-            ObjectNode healthReportNode = objectMapper.createObjectNode();
-            healthReportNode.put("reportType", "health_report");
-            healthReportNode.put("serverName", serverName);
-            healthReportNode.put("serverIp", serverIp);
-            healthReportNode.put("cpuUsage", cpuUsage);
-            healthReportNode.put("memoryUsage", memoryUsage);
-            healthReportNode.put("diskUsage", diskUsage);
-            healthReportNode.put("networkUsage", networkUsage);
-            healthReportNode.put("isAlarmed", isAlarmed);
+            // Create and send Health Report as SNMP Trap
+            PDU trap = new PDU();
+            trap.setType(PDU.TRAP);
+            // Add sysUpTime to the trap
+            trap.add(new VariableBinding(SnmpConstants.sysUpTime, new OctetString(String.valueOf(System.currentTimeMillis()))));
+            // Add snmpTrapOID to identify the type of trap (Health Report)
+            trap.add(new VariableBinding(SnmpConstants.snmpTrapOID, OID_HEALTH_REPORT));
+            // Add custom VariableBindings for health metrics
+            trap.add(new VariableBinding(new OID(OID_HEALTH_REPORT + ".1"), new OctetString(serverName))); // Server Name
+            trap.add(new VariableBinding(new OID(OID_HEALTH_REPORT + ".2"), new OctetString(serverIp)));   // Server IP
+            trap.add(new VariableBinding(OID_CPU_USAGE, new OctetString(String.format("%.2f", cpuUsage))));
+            trap.add(new VariableBinding(OID_MEMORY_USAGE, new OctetString(String.format("%.2f", memoryUsage))));
+            trap.add(new VariableBinding(OID_DISK_USAGE, new OctetString(String.format("%.2f", diskUsage))));
+            trap.add(new VariableBinding(OID_NETWORK_USAGE, new OctetString(String.format("%.2f", networkUsage))));
+            trap.add(new VariableBinding(OID_IS_ALARMED, new OctetString(String.valueOf(isAlarmed))));
 
-            String healthReportJson = objectMapper.writeValueAsString(healthReportNode);
-            sendReportPacket(healthReportJson);
-            logger.info("Health report sent to monitoring server");
-
-            // Save health report to database
-            DatabaseManager.saveReport(
-                    serverName,
-                    serverIp,
-                    cpuUsage,
-                    memoryUsage,
-                    diskUsage,
-                    networkUsage,
-                    isAlarmed
-            );
+            sendSNMPTrap(trap);
+            logger.info("Health report SNMP trap sent to monitoring server");
+            
+            // Removed: Save health report to database
+            // DatabaseManager.saveReport(
+            //     serverName,
+            //     serverIp,
+            //     cpuUsage,
+            //     memoryUsage,
+            //     diskUsage,
+            //     networkUsage,
+            //     isAlarmed 
+            // );
 
         } catch (Exception e) {
             logger.error("Error sending health report: {}", e.getMessage());
         }
     }
 
-    private void sendSingleErrorReport(String description) throws IOException {
-        ObjectNode errorReportNode = objectMapper.createObjectNode();
-        errorReportNode.put("reportType", "error_report");
-        errorReportNode.put("serverName", serverName);
-        errorReportNode.put("serverIp", serverIp);
-        errorReportNode.put("description", description);
-        errorReportNode.put("timestamp", System.currentTimeMillis());
+    private void sendSingleErrorReport(String description) {
+        try {
+            // Create and send Error Report as SNMP Trap
+            PDU trap = new PDU();
+            trap.setType(PDU.TRAP);
+            // Add sysUpTime to the trap
+            trap.add(new VariableBinding(SnmpConstants.sysUpTime, new OctetString(String.valueOf(System.currentTimeMillis()))));
+            // Add snmpTrapOID to identify the type of trap (Error Report)
+            trap.add(new VariableBinding(SnmpConstants.snmpTrapOID, OID_ERROR_REPORT));
+            // Add custom VariableBindings for error description
+            trap.add(new VariableBinding(new OID(OID_ERROR_REPORT + ".1"), new OctetString(serverName))); // Server Name
+            trap.add(new VariableBinding(new OID(OID_ERROR_REPORT + ".2"), new OctetString(serverIp)));   // Server IP
+            trap.add(new VariableBinding(OID_ERROR_DESCRIPTION, new OctetString(description)));
 
-        String errorReportJson = objectMapper.writeValueAsString(errorReportNode);
-        sendReportPacket(errorReportJson);
-        logger.warn("Error report sent to monitoring server: {}", description);
+            sendSNMPTrap(trap);
+            logger.warn("Error report SNMP trap sent to monitoring server: {}", description);
+        } catch (Exception e) {
+            logger.error("Error sending error report: {}", e.getMessage());
+        }
     }
 
-    private void sendReportPacket(String reportJson) throws IOException {
-        byte[] reportData = reportJson.getBytes();
-        DatagramPacket packet = new DatagramPacket(
-                reportData,
-                reportData.length,
-                InetAddress.getByName(monitoringIp),
-                monitoringPort
-        );
-        socket.send(packet);
+    private void sendSNMPTrap(PDU trap) throws IOException {
+        try {
+            snmp.send(trap, target);
+        } catch (IOException e) {
+            logger.error("Error sending SNMP trap: {}", e.getMessage());
+            throw e; // Re-throw to be caught by calling method
+        }
     }
 
     private double getCpuUsage() {
@@ -209,20 +215,26 @@ public class SNMPClientServer {
     }
 
     private double getNetworkUsage() {
-        // This is a placeholder for real-time network usage.
+        // This is a placeholder for real-time network usage. 
         // Oshi provides network interface information, but calculating real-time usage
         // requires tracking bytes sent/received over time and is more complex.
         // For simplicity, we return 0.0.
-        return 0.0;
+        return 0.0; 
     }
 
     public void stop() {
         if (scheduler != null) {
             scheduler.shutdown();
         }
-        if (socket != null && !socket.isClosed()) {
-            socket.close();
+        
+        if (snmp != null) {
+            try {
+                snmp.close();
+            } catch (IOException e) {
+                logger.error("Error closing SNMP sender: {}", e.getMessage());
+            }
         }
+
         DatabaseManager.close();
     }
 
@@ -232,32 +244,33 @@ public class SNMPClientServer {
         final int port;
         final String monitoringIp;
         final int monitoringPort;
+        final int trapPort; // This is now used for the SNMP agent listener if implemented
 
-        if (args.length == 5) {
+        if (args.length == 6) {
             serverName = args[0];
             serverIp = args[1];
-            port = Integer.parseInt(args[2]);
+            port = Integer.parseInt(args[2]); // This might be for agent port later
             monitoringIp = args[3];
             monitoringPort = Integer.parseInt(args[4]);
-        } else if (args.length == 4) {
-            serverName = "BTS-1";
-            serverIp = args[0];
-            port = Integer.parseInt(args[1]);
-            monitoringIp = args[2];
-            monitoringPort = Integer.parseInt(args[3]);
-            logger.info("Using default server name 'BTS-1' with provided arguments.");
+            trapPort = Integer.parseInt(args[5]);
         } else {
-            logger.error("Usage: java -jar SNMPClientServer.jar <serverName> <serverIp> <port> <monitoringIp> <monitoringPort>");
-            logger.error("Or:    java -jar SNMPClientServer.jar <serverIp> <port> <monitoringIp> <monitoringPort> (for default serverName 'BTS-1')");
-            System.exit(1);
-            return; // Add return to explicitly state no further execution
+            logger.error("Usage: java -jar <your-jar-file>.jar <serverName> <serverIp> <port> <monitoringIp> <monitoringPort> <trapPort>");
+            logger.error("Using default values.");
+            serverName = "DefaultServer";
+            serverIp = "127.0.0.1";
+            port = 161; // Default for agent
+            monitoringIp = "127.0.0.1";
+            monitoringPort = DEFAULT_TRAP_PORT; // Default for traps
+            trapPort = DEFAULT_TRAP_PORT; // Default for traps
         }
 
-        DatabaseManager.initialize();
-        SNMPClientServer server = new SNMPClientServer(serverName, serverIp, port, monitoringIp, monitoringPort);
+        SNMPClientServer server = new SNMPClientServer(serverName, serverIp, port, monitoringIp, monitoringPort, trapPort);
         server.start();
 
-        // Add shutdown hook
-        Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
+        // Add shutdown hook to ensure resources are properly released
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("Shutting down SNMP Client Server...");
+            server.stop();
+        }));
     }
 } 

@@ -1,116 +1,125 @@
 package com.mycompany.snmpmonitoringserver;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.snmp4j.CommandResponder;
+import org.snmp4j.CommandResponderEvent;
+import org.snmp4j.PDU;
+import org.snmp4j.Snmp;
+import org.snmp4j.TransportMapping;
+import org.snmp4j.mp.SnmpConstants;
+import org.snmp4j.smi.OID;
+import org.snmp4j.smi.UdpAddress;
+import org.snmp4j.smi.VariableBinding;
+import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-// Import DatabaseManager from the client package (as per current structure)
 import com.mycompany.snmpclientserver.DatabaseManager;
+import com.mycompany.snmpclientserver.SNMPClientServer;
 
-// Removed snmp4j imports
-
-public class SNMPMonitoringServer {
+public class SNMPMonitoringServer implements CommandResponder {
     private static final Logger logger = LoggerFactory.getLogger(SNMPMonitoringServer.class);
-    private final Map<String, ServerStatus> serverStatuses;
+    private final Map<String, ServerStatus> serverStatuses; // Keep this for potential future UI/logic
     private final int port;
-    private DatagramSocket socket;
-    private final ObjectMapper objectMapper;
+    private Snmp snmp;
 
     public SNMPMonitoringServer(int port) throws IOException {
         this.port = port;
         this.serverStatuses = new ConcurrentHashMap<>();
-        this.objectMapper = new ObjectMapper();
+        
+        // Initialize SNMP Trap Receiver
+        TransportMapping transport = new DefaultUdpTransportMapping(new UdpAddress("0.0.0.0/" + port));
+        snmp = new Snmp(transport);
+        snmp.addCommandResponder(this);
     }
 
     public void start() {
         try {
-            socket = new DatagramSocket(port);
-            logger.info("SNMP Monitoring Server started on port {}", port);
-
-            new Thread(this::listenForReports).start();
-
-        } catch (SocketException e) {
-            logger.error("Error starting server socket: {}", e.getMessage());
+            snmp.listen();
+            logger.info("SNMP Monitoring Server started and listening for traps on port {}", port);
         } catch (IOException e) {
-            logger.error("Error starting server: {}", e.getMessage());
+            logger.error("Error starting SNMP Monitoring Server: {}", e.getMessage());
         }
     }
 
-    private void listenForReports() {
-        byte[] buffer = new byte[1024];
-        while (!socket.isClosed()) {
-            try {
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                socket.receive(packet);
+    @Override
+    public void processPdu(CommandResponderEvent event) {
+        PDU pdu = event.getPDU();
+        if (pdu != null) {
+            logger.info("Received PDU from {}: {}", event.getPeerAddress(), pdu.toString());
+            
+            OID trapOID = null;
+            String serverName = "Unknown";
+            String serverIp = event.getPeerAddress().toString(); // Default to peer address
+            String description = "N/A";
+            double cpuUsage = 0.0;
+            double memoryUsage = 0.0;
+            double diskUsage = 0.0;
+            double networkUsage = 0.0;
+            boolean isAlarmed = false;
+            long timestamp = System.currentTimeMillis();
 
-                String receivedJson = new String(packet.getData(), 0, packet.getLength());
-                processReport(receivedJson);
-
-            } catch (IOException e) {
-                if (!socket.isClosed()) {
-                    logger.error("Error receiving report: {}", e.getMessage());
+            for (VariableBinding vb : pdu.getVariableBindings()) {
+                OID oid = vb.getOid();
+                if (oid.equals(SnmpConstants.snmpTrapOID)) {
+                    trapOID = (OID) vb.getVariable();
+                } else if (oid.equals(new OID(SNMPClientServer.OID_HEALTH_REPORT + ".1")) || oid.equals(new OID(SNMPClientServer.OID_ERROR_REPORT + ".1"))) {
+                    serverName = vb.getVariable().toString();
+                } else if (oid.equals(new OID(SNMPClientServer.OID_HEALTH_REPORT + ".2")) || oid.equals(new OID(SNMPClientServer.OID_ERROR_REPORT + ".2"))) {
+                    serverIp = vb.getVariable().toString();
+                } else if (oid.equals(SNMPClientServer.OID_CPU_USAGE)) {
+                    try { cpuUsage = Double.parseDouble(vb.getVariable().toString()); } catch (NumberFormatException e) { /* ignore */ }
+                } else if (oid.equals(SNMPClientServer.OID_MEMORY_USAGE)) {
+                    try { memoryUsage = Double.parseDouble(vb.getVariable().toString()); } catch (NumberFormatException e) { /* ignore */ }
+                } else if (oid.equals(SNMPClientServer.OID_DISK_USAGE)) {
+                    try { diskUsage = Double.parseDouble(vb.getVariable().toString()); } catch (NumberFormatException e) { /* ignore */ }
+                } else if (oid.equals(SNMPClientServer.OID_NETWORK_USAGE)) {
+                    try { networkUsage = Double.parseDouble(vb.getVariable().toString()); } catch (NumberFormatException e) { /* ignore */ }
+                } else if (oid.equals(SNMPClientServer.OID_IS_ALARMED)) {
+                    isAlarmed = Boolean.parseBoolean(vb.getVariable().toString());
+                } else if (oid.equals(SNMPClientServer.OID_ERROR_DESCRIPTION)) {
+                    description = vb.getVariable().toString();
                 }
+                // Add more OID mappings as needed
             }
-        }
-    }
 
-    private void processReport(String jsonString) {
-        try {
-            JsonNode rootNode = objectMapper.readTree(jsonString);
-            String reportType = rootNode.get("reportType").asText();
-
-            if ("health_report".equals(reportType)) {
-                String serverName = rootNode.get("serverName").asText();
-                String serverIp = rootNode.get("serverIp").asText();
-                double cpuUsage = rootNode.get("cpuUsage").asDouble();
-                double memoryUsage = rootNode.get("memoryUsage").asDouble();
-                double diskUsage = rootNode.get("diskUsage").asDouble();
-                double networkUsage = rootNode.get("networkUsage").asDouble();
-                boolean isAlarmed = rootNode.get("isAlarmed").asBoolean();
-
-                DatabaseManager.saveReport(
+            if (trapOID != null) {
+                if (trapOID.equals(SNMPClientServer.OID_HEALTH_REPORT)) {
+                    logger.info("Processing Health Report Trap from {}: CPU={:.2f}%%, Mem={:.2f}%%, Disk={:.2f}%%, Alarmed={}",
+                                serverName, cpuUsage, memoryUsage, diskUsage, isAlarmed);
+                    DatabaseManager.saveReport(
                         serverName, serverIp, cpuUsage, memoryUsage, diskUsage, networkUsage, isAlarmed
-                );
-                logger.info("Received health report from {}: CPU={:.2f}%%, Mem={:.2f}%%, Disk={:.2f}%%, Alarmed={}",
-                        serverName, cpuUsage, memoryUsage, diskUsage, isAlarmed);
-
-            } else if ("error_report".equals(reportType)) {
-                String serverName = rootNode.get("serverName").asText();
-                String serverIp = rootNode.get("serverIp").asText();
-                String description = rootNode.get("description").asText();
-                long timestamp = rootNode.get("timestamp").asLong();
-
-                DatabaseManager.saveErrorReport(
+                    );
+                } else if (trapOID.equals(SNMPClientServer.OID_ERROR_REPORT)) {
+                    logger.warn("Processing Error Report Trap from {}: {}", serverName, description);
+                    DatabaseManager.saveErrorReport(
                         serverName, serverIp, description, timestamp
-                );
-                DatabaseManager.handleServerError(serverIp + " : " + serverName, "error_report", description);
-                logger.warn("Received error report from {}: {}", serverName, description);
-
+                    );
+                    DatabaseManager.handleServerError(serverName, serverIp, "error_report", description);
+                } else {
+                    logger.warn("Received unknown SNMP Trap OID: {}", trapOID);
+                }
             } else {
-                logger.warn("Unknown report type received: {}", reportType);
+                logger.warn("Received SNMP PDU without snmpTrapOID: {}", pdu.toString());
             }
-
-        } catch (IOException e) {
-            logger.error("Error parsing JSON report: {}", e.getMessage());
-        } catch (Exception e) {
-            logger.error("Error processing report: {}", e.getMessage());
+        } else {
+            logger.warn("Received null PDU in CommandResponderEvent");
         }
     }
 
     public void stop() {
-        if (socket != null && !socket.isClosed()) {
-            socket.close();
+        if (snmp != null) {
+            try {
+                snmp.close();
+                logger.info("SNMP Monitoring Server stopped");
+            } catch (IOException e) {
+                logger.error("Error stopping SNMP Monitoring Server: {}", e.getMessage());
+            }
         }
         DatabaseManager.close();
-        logger.info("SNMP Monitoring Server stopped");
     }
 
     public Map<String, ServerStatus> getServerStatuses() {
@@ -120,8 +129,8 @@ public class SNMPMonitoringServer {
     public static void main(String[] args) {
         int port;
         if (args.length == 0) {
-            port = 161;
-            logger.info("No port specified, using default port: {}", port);
+            port = SNMPClientServer.DEFAULT_TRAP_PORT; // Use client's default trap port
+            logger.info("No port specified, using default trap port: {}", port);
         } else if (args.length == 1) {
             try {
                 port = Integer.parseInt(args[0]);
@@ -153,4 +162,4 @@ public class SNMPMonitoringServer {
             System.exit(1);
         }
     }
-}
+} 

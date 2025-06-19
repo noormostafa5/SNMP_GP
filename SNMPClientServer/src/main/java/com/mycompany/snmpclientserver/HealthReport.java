@@ -11,8 +11,8 @@ public class HealthReport {
     public HealthReport() {
     }
 
-    public HealthReport(String serverName, String serverIp, double cpuUsage,
-                        double memoryUsage, double diskUsage, double networkUsage) {
+    public HealthReport(String serverName, String serverIp, double cpuUsage, 
+                       double memoryUsage, double diskUsage, double networkUsage) {
         this.serverName = serverName;
         this.serverIp = serverIp;
         this.cpuUsage = cpuUsage;
@@ -70,4 +70,4 @@ public class HealthReport {
     public void setNetworkUsage(double networkUsage) {
         this.networkUsage = networkUsage;
     }
-}
+} 
